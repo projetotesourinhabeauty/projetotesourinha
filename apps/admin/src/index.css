@@ -219,3 +219,13 @@ select.inline { border: 1px solid var(--border); background: var(--surface); bor
 /* Ícones com traço fino, no espírito do SF Symbols */
 .lucide { stroke-width: 1.75; }
 body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-feature-settings: 'cv11', 'ss01'; }
+
+/* Área do Aluno */
+.alert { padding: 10px 12px; border-radius: 10px; background: #fff0f0; color: var(--red); font-size: 13px; }
+.qr-full { position: fixed; inset: 0; z-index: 60; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px; text-align: center; }
+.qr-full h2 { margin: 0; font-size: clamp(22px, 3vw, 34px); letter-spacing: -0.02em; }
+.qr-full img { width: min(58vh, 86vw); height: auto; image-rendering: pixelated; border-radius: 18px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); margin: 10px 0; }
+.qr-title { color: var(--brand); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 13px; }
+.qr-code { font-size: 15px; } .qr-code strong { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.04em; }
+.fields-3 { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; } .fields-3 > * { min-width: 0; }
+@media (max-width: 560px) { .fields-3 { grid-template-columns: 1fr 1fr; } .fields-3 > :first-child { grid-column: 1 / -1; } }

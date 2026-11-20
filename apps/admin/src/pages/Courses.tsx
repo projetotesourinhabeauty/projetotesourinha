@@ -1,8 +1,9 @@
 import { CalendarDays, Clock, Pencil, Plus, Users } from 'lucide-react'
 import { useState } from 'react'
 
-import { Avatar, Badge, Drawer, Field, ImageUpload, PageHeader, Switch, useToast } from '../components/ui'
+import { Badge, Drawer, Field, ImageUpload, PageHeader, Switch, useToast } from '../components/ui'
 import { fmtDate, useStore, type AdminCourse } from '../data/store'
+import { CourseAcademic } from './CourseAcademic'
 import { courseCategories } from '@shared/catalog'
 import type { Course } from '@shared/types'
 
@@ -65,7 +66,7 @@ export default function Courses() {
                 <div className="progress"><div style={{ width: `${pct}%`, background: full ? '#AEAEB2' : undefined }} /></div>
               </div>
               <div className="row">
-                <button className="btn sm" onClick={() => setStudents(c)}><Users size={13} /> Inscritos ({enrolled(c.id).length})</button>
+                <button className="btn sm" onClick={() => setStudents(c)}><Users size={13} /> Turma ({enrolled(c.id).length})</button>
                 <button className="btn sm ghost" onClick={() => setEdit({ ...c })}><Pencil size={13} /> Editar</button>
               </div>
             </div>
@@ -129,26 +130,7 @@ export default function Courses() {
         )}
       </Drawer>
 
-      <Drawer open={!!students} title={`Inscritos · ${students?.title ?? ''}`} onClose={() => setStudents(null)}>
-        {students &&
-          (enrolled(students.id).length === 0 ? (
-            <div className="empty">Nenhum inscrito ainda.</div>
-          ) : (
-            enrolled(students.id).map((e) => {
-              const u = db.users.find((x) => x.id === e.userId)
-              return (
-                <div key={e.id} className="cell-main">
-                  <Avatar name={u?.name ?? '?'} color="#3A3A3C" />
-                  <div style={{ flex: 1 }}>
-                    <div className="t">{u?.name}</div>
-                    <div className="s">{u?.phone} · inscrito em {fmtDate(e.createdAt)}</div>
-                  </div>
-                  <Badge tone={e.status === 'inscrito' ? 'green' : 'orange'}>{e.status}</Badge>
-                </div>
-              )
-            })
-          ))}
-      </Drawer>
+      <CourseAcademic course={students} onClose={() => setStudents(null)} />
     </>
   )
 }

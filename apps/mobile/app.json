@@ -47,6 +47,13 @@
         {
           "color": "#FF6A13"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "O Tesourinha Beauty usa a câmera para ler o QR Code da chamada nas aulas.",
+          "recordAudioAndroid": false
+        }
       ]
     ],
     "experiments": {

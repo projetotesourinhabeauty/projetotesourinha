@@ -1,6 +1,6 @@
 import { Icon } from '@/components/icon';
 import { Image } from 'expo-image';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
 import { BottomBar, Screen, ScreenHeader, Sheet } from '@/components/screen';
@@ -92,14 +92,14 @@ export default function CourseDetail() {
       </Sheet>
       <BottomBar>
         <Button
-          title={enrolled ? 'Inscrição confirmada' : full ? 'Entrar na lista de espera' : 'Quero me inscrever'}
-          icon={enrolled ? 'checkmark-circle' : undefined}
-          variant={enrolled ? 'secondary' : 'primary'}
-          disabled={enrolled}
+          title={enrolled ? 'Abrir minha turma' : full ? 'Entrar na lista de espera' : 'Quero me inscrever'}
+          icon={enrolled ? 'school-outline' : undefined}
+          variant={enrolled ? 'dark' : 'primary'}
           onPress={() => {
+            if (enrolled) return router.push({ pathname: '/student/[id]', params: { id: course.id } });
             enroll(course.id);
             haptic.success();
-            notify(full ? 'Você está na lista de espera' : 'Inscrição realizada!', full ? 'Avisaremos assim que abrir uma vaga.' : 'Enviaremos os detalhes da turma por e-mail e WhatsApp.');
+            notify(full ? 'Você está na lista de espera' : 'Inscrição realizada!', full ? 'Avisaremos assim que abrir uma vaga.' : 'As datas das aulas e os materiais ficam em Perfil › Meus cursos.');
           }}
         />
       </BottomBar>

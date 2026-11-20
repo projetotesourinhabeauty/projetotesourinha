@@ -72,6 +72,13 @@ import {
   Pencil,
   Smartphone,
   Minus,
+  ScanQrCode,
+  CirclePlay,
+  Link,
+  ExternalLink,
+  BookOpen,
+  Trophy,
+  Keyboard,
   type LucideIcon,
 } from 'lucide-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -201,6 +208,13 @@ const MAP = {
   create: def('pencil', Pencil),
   'phone-portrait': def('iphone', Smartphone),
   remove: def('minus', Minus),
+  'qr-code': def('qrcode.viewfinder', ScanQrCode),
+  'play-circle': def('play.circle.fill', CirclePlay),
+  link: def('link', Link),
+  'open-outline': def('arrow.up.right.square', ExternalLink),
+  'book-outline': def('book', BookOpen),
+  trophy: def('trophy.fill', Trophy),
+  'keypad-outline': def('keyboard', Keyboard),
 } satisfies Record<Exclude<IconName, (typeof BRANDS)[number]>, Def>;
 
 

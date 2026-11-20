@@ -41,13 +41,13 @@ export function ProfessionalRow({ pro, compact }: { pro: Professional; compact?:
   );
 }
 
-export function CourseRow({ course }: { course: Course }) {
+export function CourseRow({ course, student }: { course: Course; student?: boolean }) {
   const { enrollments } = useApp();
   const enrolled = enrollments.includes(course.id);
   const full = course.seatsTaken >= course.seats;
   return (
     <PressableScale
-      onPress={() => router.push({ pathname: '/courses/[id]', params: { id: course.id } })}
+      onPress={() => router.push({ pathname: student ? '/student/[id]' : '/courses/[id]', params: { id: course.id } })}
       style={{ flexDirection: 'row', gap: spacing.md, backgroundColor: colors.surface, padding: spacing.md, borderRadius: radius.xl, alignItems: 'center', ...shadow.card }}>
       <View style={{ width: 76, height: 76, borderRadius: radius.lg, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         {course.coverUrl ? (

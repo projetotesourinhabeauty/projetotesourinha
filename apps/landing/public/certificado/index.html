@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificado · Tesourinha Beauty</title>
+<meta name="theme-color" content="#0B0B0C">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap">
+<style>
+  :root { --brand:#FF6A13; --ink:#0B0B0C; --muted:#6E6E73; --line:#E5E5EA; --bg:#F2F2F7; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+  .bar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .bar a { color: var(--ink); text-decoration:none; font-weight:800; letter-spacing:.06em; }
+  .bar a b { color: var(--brand); }
+  .status { display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:99px; font-weight:600; font-size:14px; }
+  .ok { background:#E8F8EC; color:#1F8A3B; } .bad { background:#FFECEB; color:#D70015; }
+  .btn { appearance:none; border:0; border-radius:12px; padding:12px 18px; font: inherit; font-weight:600; background:var(--brand); color:#fff; cursor:pointer; }
+  form { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+  input { flex:1; min-width:200px; font:inherit; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:#fff; text-transform:uppercase; letter-spacing:.08em; }
+  .cert { background:#fff; border-radius:24px; box-shadow:0 20px 60px rgba(0,0,0,.08); aspect-ratio: 297 / 210; position:relative; overflow:hidden; padding: 6% 7%; display:flex; flex-direction:column; justify-content:space-between; }
+  .cert::before { content:""; position:absolute; inset:14px; border:1.5px solid var(--brand); border-radius:16px; pointer-events:none; }
+  .cert::after { content:""; position:absolute; right:-12%; top:-30%; width:55%; aspect-ratio:1; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(255,106,19,.18), rgba(255,106,19,0) 70%); }
+  .kicker { color:var(--brand); font-weight:700; letter-spacing:.18em; text-transform:uppercase; font-size: clamp(10px, 1.4vw, 14px); }
+  .title { font-size: clamp(26px, 5vw, 56px); font-weight:800; letter-spacing:-.02em; line-height:1.05; margin:.2em 0 0; }
+  .lead { color:var(--muted); font-size: clamp(12px, 1.7vw, 18px); margin-top:.8em; }
+  .name { font-size: clamp(22px, 4.2vw, 46px); font-weight:700; letter-spacing:-.01em; margin:.15em 0; }
+  .course { font-size: clamp(14px, 2.3vw, 24px); font-weight:600; }
+  .foot { display:flex; justify-content:space-between; align-items:flex-end; gap:16px; font-size: clamp(10px, 1.3vw, 13px); color:var(--muted); }
+  .sig { border-top:1px solid var(--ink); padding-top:6px; min-width: 32%; color:var(--ink); font-weight:600; }
+  .code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color:var(--ink); }
+  .hidden { display:none !important; }
+  .help { color:var(--muted); font-size:14px; margin-top:16px; }
+  @media print {
+    @page { size: A4 landscape; margin: 0; }
+    body { background:#fff; }
+    .wrap { max-width:none; padding:0; }
+    .bar, .help, form { display:none !important; }
+    .cert { border-radius:0; box-shadow:none; width:297mm; height:210mm; aspect-ratio:auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <a href="/">TESOURINHA <b>BEAUTY</b></a>
+    <span id="status" class="status hidden"></span>
+    <button id="print" class="btn hidden" type="button">Baixar PDF</button>
+  </div>
+
+  <section id="cert" class="cert hidden" aria-label="Certificado">
+    <div>
+      <div class="kicker">Associação Tesourinha · Certificado de conclusão</div>
+      <div class="title">Certificado</div>
+      <div class="lead">Certificamos que</div>
+      <div class="name" id="c-name"></div>
+      <div class="lead">concluiu o curso</div>
+      <div class="course" id="c-course"></div>
+      <div class="lead" id="c-meta"></div>
+    </div>
+    <div class="foot">
+      <div class="sig">Associação Tesourinha<br><span style="font-weight:400;color:var(--muted)">Av. Ibirapuera, 3501 · São Paulo, SP</span></div>
+      <div style="text-align:right">Código de verificação<br><span class="code" id="c-code"></span><br><span id="c-url"></span></div>
+    </div>
+  </section>
+
+  <div id="lookup">
+    <h1 style="margin:24px 0 4px;font-size:28px;letter-spacing:-.02em">Verificar certificado</h1>
+    <p class="help" style="margin-top:0">Digite o código impresso no certificado para confirmar que ele é verdadeiro.</p>
+    <form id="form"><input id="code" name="c" placeholder="Ex.: 85940FF811" autocomplete="off" required><button class="btn" type="submit">Verificar</button></form>
+  </div>
+  <p class="help">Dúvidas: contato@curso-tesourinha.com.br · (11) 99979-5965</p>
+</div>
+<script>
+  // Chave pública (publishable) do Supabase: só permite o que as regras do banco liberam.
+  const SUPABASE_URL = 'https://nwykuwvtmvwlycizojom.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9n4BKXyC2diV3Xr_AjzJiA_AOtpxrXh';
+  const $ = (id) => document.getElementById(id);
+  const code = (new URLSearchParams(location.search).get('c') || '').trim().toUpperCase();
+  $('print').onclick = () => window.print();
+
+  async function verify(c) {
+    const status = $('status');
+    status.className = 'status'; status.textContent = 'Verificando…';
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/verify_certificate`, {
+        method: 'POST',
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_code: c }),
+      });
+      const d = await r.json();
+      if (!r.ok || !d) throw new Error('not found');
+      const when = new Date(d.completed_at).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo' });
+      $('c-name').textContent = d.name;
+      $('c-course').textContent = d.course;
+      $('c-meta').textContent = `com carga horária de ${d.hours} horas, em ${when}.`;
+      $('c-code').textContent = d.code;
+      $('c-url').textContent = `${location.host}/certificado`;
+      $('cert').classList.remove('hidden');
+      $('print').classList.remove('hidden');
+      $('lookup').classList.add('hidden');
+      status.className = 'status ok'; status.textContent = '✓ Certificado válido';
+      document.title = `Certificado · ${d.name}`;
+    } catch {
+      status.className = 'status bad'; status.textContent = 'Código não encontrado';
+      $('code').value = c;
+    }
+  }
+  if (code) verify(code);
+  $('form').onsubmit = (e) => { e.preventDefault(); const c = $('code').value.trim().toUpperCase(); if (c) location.search = `?c=${encodeURIComponent(c)}`; };
+</script>
+</body>
+</html>

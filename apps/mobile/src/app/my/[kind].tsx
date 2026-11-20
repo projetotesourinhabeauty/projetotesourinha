@@ -26,7 +26,7 @@ export default function MyItems() {
             <EmptyState icon="briefcase-outline" title="Nenhuma candidatura" text="Encontre oportunidades em salões e parceiros da Tesourinha." action="Ver vagas" onAction={() => router.replace('/jobs')} />
           )
         ) : isCourses ? (
-          myCourses.map((c) => <CourseRow key={c.id} course={c} />)
+          myCourses.map((c) => <CourseRow key={c.id} course={c} student />)
         ) : (
           myJobs.map((j) => <JobRow key={j.id} job={j} />)
         )}
