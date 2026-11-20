@@ -62,6 +62,7 @@ export default function Profile() {
           </ListGroup>
 
           <ListGroup title="App">
+            <ListRow icon="mail-unread-outline" title="Avisos" onPress={() => router.push('/notifications')} />
             <ListRow icon="notifications-outline" title="Notificações" onPress={() => router.push('/settings')} />
             <ListRow icon="settings-outline" title="Configurações" onPress={() => router.push('/settings')} />
             <ListRow icon="help-circle-outline" title="Ajuda" onPress={() => router.push('/help')} />

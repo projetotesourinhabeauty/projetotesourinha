@@ -5,6 +5,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import { loadRemoteCatalog } from '@/data/remote-catalog';
 import { fromResume, toBooking, toProfile, toResume, toStartsAt } from '@/data/mappers';
 import type { Booking, Resume, UserProfile } from '@/data/types';
+import { registerForPush } from '@/lib/notifications';
 import { friendlyError, isRemote, supabase } from '@/lib/supabase';
 
 /**
@@ -70,6 +71,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const loadUserData = useCallback(async (uid: string, email?: string) => {
     if (!supabase) return;
+    void registerForPush('cliente', uid);
     const [profile, bookings, favs, enr, apps, resume] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', uid).maybeSingle(),
       supabase.from('bookings').select('*').eq('user_id', uid).order('starts_at', { ascending: false }),

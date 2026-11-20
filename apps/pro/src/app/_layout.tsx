@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ProProvider, usePro } from '@/store/pro-store';
+import { listenPushTaps } from '@/lib/notifications';
 import { colors } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -16,6 +17,7 @@ function RootStack() {
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => {});
   }, [ready]);
+  useEffect(() => (ready ? listenPushTaps() : undefined), [ready]);
   if (!ready) return null;
 
   return (

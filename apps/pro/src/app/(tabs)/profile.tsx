@@ -71,7 +71,7 @@ export default function Profile() {
 
           <ListGroup title="Conta">
             <ListRow icon="person-outline" title="Meus dados" onPress={() => router.push('/edit-profile')} />
-            <ListRow icon="notifications-outline" title="Notificações" subtitle="Novo agendamento, cancelamento e lembretes" onPress={() => notify('Em breve', 'As notificações chegam quando o app for ligado ao servidor.')} />
+            <ListRow icon="notifications-outline" title="Notificações" subtitle="Novo agendamento, cancelamento e lembretes" onPress={() => router.push('/notifications')} />
             <ListRow icon="help-circle-outline" title="Ajuda" onPress={() => notify('Ajuda', `Fale com a ${association.name} pelo WhatsApp ou e-mail informados no app do cliente.`)} />
           </ListGroup>
 

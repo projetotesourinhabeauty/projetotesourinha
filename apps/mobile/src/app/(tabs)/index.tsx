@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BookingCard } from '@/components/cards';
 import { ScissorsMark } from '@/components/logo';
+import { NoticeBell } from '@/components/notices';
 import { Avatar, Badge, Button, IconTile, PressableScale, Rating, SectionHeader, Text } from '@/components/ui';
 import { association, categories, courses, professionals } from '@/data/catalog';
 import type { IconName } from '@/data/types';
@@ -39,11 +40,14 @@ export default function Home() {
               <Text variant="subhead" color="rgba(255,255,255,0.85)">{greeting()},</Text>
               <Text variant="title1" color={colors.white}>Olá, {firstName}!</Text>
             </View>
-            <PressableScale onPress={() => router.push('/(tabs)/profile')}>
-              <View style={{ borderWidth: 2, borderColor: 'rgba(255,255,255,0.7)', borderRadius: 24 }}>
-                <Avatar name={user?.name ?? 'T B'} color={colors.black} size={44} />
-              </View>
-            </PressableScale>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+              {user && <NoticeBell app="cliente" />}
+              <PressableScale onPress={() => router.push('/(tabs)/profile')}>
+                <View style={{ borderWidth: 2, borderColor: 'rgba(255,255,255,0.7)', borderRadius: 24 }}>
+                  <Avatar name={user?.name ?? 'T B'} color={colors.black} size={44} />
+                </View>
+              </PressableScale>
+            </View>
           </View>
           <Text variant="subhead" color="rgba(255,255,255,0.9)" style={{ marginTop: 2 }}>Beleza que transforma vidas</Text>
 

@@ -4,6 +4,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import type { Session } from '@supabase/supabase-js';
 
 import { loadRemoteCatalog } from '@/data/remote-catalog';
+import { registerForPush } from '@/lib/notifications';
 import { friendlyError, isRemote, supabase } from '@/lib/supabase';
 import { DEFAULT_WEEK, demoState } from '@/pro/demo';
 import * as remote from '@/pro/remote';
@@ -80,6 +81,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
 
   const load = useCallback(async (uid: string, email: string) => {
     uidRef.current = { uid, email };
+    void registerForPush('pro', uid);
     const { professionalId, state: loaded } = await remote.loadPro(uid, email);
     proId.current = professionalId;
     setState(professionalId ? { ...empty, ...loaded } : empty);

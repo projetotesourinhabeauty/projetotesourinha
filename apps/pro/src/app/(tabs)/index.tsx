@@ -6,6 +6,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppointmentCard, formatMoneyShort, StatTile } from '@/components/pro';
+import { NoticeBell } from '@/components/notices';
 import { Avatar, Badge, Button, Card, IconTile, PressableScale, SectionHeader, Text } from '@/components/ui';
 import { findService } from '@/data/catalog';
 import type { IconName } from '@/data/types';
@@ -53,11 +54,14 @@ export default function Today() {
               <Text variant="subhead" color="rgba(255,255,255,0.85)">{greeting()},</Text>
               <Text variant="title1" color={colors.white}>{firstName}!</Text>
             </View>
-            <PressableScale onPress={() => router.push('/(tabs)/profile')}>
-              <View style={{ borderWidth: 2, borderColor: 'rgba(255,255,255,0.7)', borderRadius: 24 }}>
-                <Avatar name={profile?.name ?? 'T P'} color={colors.black} uri={profile?.avatarUrl} size={44} />
-              </View>
-            </PressableScale>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+              <NoticeBell app="pro" />
+              <PressableScale onPress={() => router.push('/(tabs)/profile')}>
+                <View style={{ borderWidth: 2, borderColor: 'rgba(255,255,255,0.7)', borderRadius: 24 }}>
+                  <Avatar name={profile?.name ?? 'T P'} color={colors.black} uri={profile?.avatarUrl} size={44} />
+                </View>
+              </PressableScale>
+            </View>
           </View>
           <Text variant="subhead" color="rgba(255,255,255,0.9)" style={{ marginTop: 2 }}>{formatDayLong(today)}</Text>
 

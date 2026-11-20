@@ -1,23 +1,49 @@
+import { useEffect, useState } from 'react';
 import { Switch } from 'react-native';
-import { useState } from 'react';
 
 import { Screen, ScreenHeader, Sheet } from '@/components/screen';
 import { ListGroup, ListRow } from '@/components/ui';
+import { supabase } from '@/lib/supabase';
 import { colors, spacing } from '@/theme';
 
+type Prefs = { notify_reminders: boolean; notify_courses: boolean; notify_jobs: boolean };
+
 export default function Settings() {
-  const [reminders, setReminders] = useState(true);
-  const [news, setNews] = useState(true);
-  const [jobs, setJobs] = useState(false);
-  const sw = (v: boolean, set: (v: boolean) => void) => <Switch value={v} onValueChange={set} trackColor={{ true: colors.brand, false: colors.border }} thumbColor={colors.white} />;
+  const [prefs, setPrefs] = useState<Prefs>({ notify_reminders: true, notify_courses: true, notify_jobs: false });
+
+  // Com servidor, as preferências ficam salvas no perfil (o lembrete de agendamento respeita a escolha).
+  useEffect(() => {
+    if (!supabase) return;
+    void (async () => {
+      const { data: auth } = await supabase!.auth.getUser();
+      if (!auth.user) return;
+      const { data } = await supabase!.from('profiles').select('notify_reminders, notify_courses, notify_jobs').eq('id', auth.user.id).maybeSingle();
+      if (data) setPrefs(data as Prefs);
+    })();
+  }, []);
+
+  const toggle = (key: keyof Prefs) => (v: boolean) => {
+    setPrefs((p) => ({ ...p, [key]: v }));
+    if (!supabase) return;
+    void (async () => {
+      const { data: auth } = await supabase!.auth.getUser();
+      if (!auth.user) return;
+      const { error } = await supabase!.from('profiles').update({ [key]: v }).eq('id', auth.user.id);
+      if (error) setPrefs((p) => ({ ...p, [key]: !v }));
+    })();
+  };
+
+  const sw = (key: keyof Prefs) => (
+    <Switch value={prefs[key]} onValueChange={toggle(key)} trackColor={{ true: colors.brand, false: colors.border }} thumbColor={colors.white} />
+  );
   return (
     <Screen>
       <ScreenHeader title="Configurações" />
       <Sheet contentStyle={{ gap: spacing.xxl }}>
         <ListGroup title="Notificações" footer="Você pode alterar isso a qualquer momento.">
-          <ListRow icon="alarm-outline" title="Lembretes de agendamento" right={sw(reminders, setReminders)} />
-          <ListRow icon="school-outline" title="Novas turmas de cursos" right={sw(news, setNews)} />
-          <ListRow icon="briefcase-outline" title="Vagas compatíveis comigo" right={sw(jobs, setJobs)} />
+          <ListRow icon="alarm-outline" title="Lembretes de agendamento" right={sw('notify_reminders')} />
+          <ListRow icon="school-outline" title="Novas turmas de cursos" right={sw('notify_courses')} />
+          <ListRow icon="briefcase-outline" title="Vagas compatíveis comigo" right={sw('notify_jobs')} />
         </ListGroup>
         <ListGroup title="Privacidade">
           <ListRow icon="shield-checkmark-outline" title="Política de privacidade" onPress={() => {}} />

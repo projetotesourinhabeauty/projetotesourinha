@@ -13,6 +13,7 @@ const shared = [
   'lib/haptics.ts',
   'lib/confirm.ts',
   'lib/supabase.ts',
+  'lib/notifications.ts',
   'data/catalog.ts',
   'data/types.ts',
   'data/mappers.ts',
@@ -21,6 +22,7 @@ const shared = [
   'components/screen.tsx',
   'components/logo.tsx',
   'components/calendar.tsx',
+  'components/notices.tsx',
 ]
 
 if (!existsSync(mobile(''))) {
