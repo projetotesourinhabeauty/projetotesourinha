@@ -80,3 +80,8 @@ npm run dev             # http://localhost:5173
 ```
 
 Os serviços e profissionais vêm do catálogo do app (`apps/mobile/src/data/catalog.ts`); os cursos e contatos ficam em `apps/landing/src/content.ts`. A página usa a skill **scroll-craft** (instalada em `.claude/skills/scroll-craft`); o motor fica em `apps/landing/public/vendor` e não é editado. O plano da página está em `apps/landing/BRIEF.md`.
+
+## Publicação (Vercel)
+
+Um único projeto, na raiz do repositório (Root Directory `./`, Application Preset **Other**, branch de produção `main`). O `vercel.json` já define o build (`node scripts/build-vercel.mjs`).
+Variáveis de ambiente: `EXPO_PUBLIC_SUPABASE_URL` e `EXPO_PUBLIC_SUPABASE_ANON_KEY` (chave pública; nunca use a `service_role`/`secret`).
