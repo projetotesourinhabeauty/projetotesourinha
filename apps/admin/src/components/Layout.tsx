@@ -1,4 +1,4 @@
-import { Briefcase, CalendarDays, GraduationCap, LayoutDashboard, LogOut, Menu, Scissors, Sparkles, Users } from 'lucide-react'
+import { Briefcase, CalendarDays, GraduationCap, LayoutDashboard, LogOut, Menu, Medal, Scissors, Sparkles, Users } from 'lucide-react'
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
@@ -22,6 +22,7 @@ export default function Layout() {
     { to: '/vagas', label: 'Vagas', icon: Briefcase, count: newApps },
     { section: 'Pessoas' },
     { to: '/usuarios', label: 'Usuários', icon: Users },
+    { to: '/pontos', label: 'Pontos e níveis', icon: Medal },
   ] as const
 
   return (

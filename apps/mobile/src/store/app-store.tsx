@@ -47,7 +47,7 @@ interface AppStore extends UserData {
   /** Modo demonstração: entra sem senha. */
   signIn: (user: UserProfile) => void;
   signInWithEmail: (email: string, password: string) => Promise<Result>;
-  signUpWithEmail: (data: { name: string; email: string; phone: string; password: string }) => Promise<Result<{ needsConfirmation: boolean }>>;
+  signUpWithEmail: (data: { name: string; email: string; phone: string; password: string; ref?: string }) => Promise<Result<{ needsConfirmation: boolean }>>;
   signOut: () => void;
   updateUser: (patch: Partial<UserProfile>) => void;
   toggleFavorite: (professionalId: string) => void;
@@ -155,12 +155,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return { ok: true, data: undefined };
   }, [loadUserData]);
 
-  const signUpWithEmail = useCallback<AppStore['signUpWithEmail']>(async ({ name, email, phone, password }) => {
+  const signUpWithEmail = useCallback<AppStore['signUpWithEmail']>(async ({ name, email, phone, password, ref }) => {
     if (!supabase) return { ok: false, error: 'Servidor não configurado.' };
     const { data, error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
       password,
-      options: { data: { full_name: name.trim(), phone: phone.trim() || null } },
+      options: { data: { full_name: name.trim(), phone: phone.trim() || null, ref: ref?.trim().toUpperCase() || null } },
     });
     if (error) return { ok: false, error: friendlyError(error) };
     // Com "Confirm email" ligado no Supabase, não vem sessão até o e-mail ser confirmado.

@@ -12,7 +12,7 @@ import { useApp } from '@/store/app-store';
 import { colors, radius, spacing } from '@/theme';
 
 export default function Auth() {
-  const params = useLocalSearchParams<{ mode?: string }>();
+  const params = useLocalSearchParams<{ mode?: string; ref?: string }>();
   const [mode, setMode] = useState<'login' | 'signup'>(params.mode === 'login' ? 'login' : 'signup');
   const { signIn, signInWithEmail, signUpWithEmail, remote } = useApp();
   const insets = useSafeAreaInsets();
@@ -20,6 +20,7 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [ref, setRef] = useState(params.ref ?? '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
@@ -38,7 +39,7 @@ export default function Auth() {
     if (remote) {
       void (async () => {
         const res = isSignup
-          ? await signUpWithEmail({ name, email, phone, password })
+          ? await signUpWithEmail({ name, email, phone, password, ref })
           : await signInWithEmail(email, password);
         setLoading(false);
         if (!res.ok) {
@@ -112,6 +113,7 @@ export default function Auth() {
           <Field label="E-mail" icon="mail-outline" placeholder="voce@email.com" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" textContentType="emailAddress" />
           {isSignup && <Field label="Celular" icon="call-outline" placeholder="(11) 90000-0000" value={phone} onChangeText={setPhone} keyboardType="phone-pad" textContentType="telephoneNumber" />}
           <Field label="Senha" icon="lock-closed-outline" placeholder="Mínimo de 6 caracteres" value={password} onChangeText={setPassword} secureTextEntry textContentType={isSignup ? 'newPassword' : 'password'} />
+          {isSignup && <Field label="Código de convite (opcional)" icon="gift-outline" placeholder="Ex.: A1B2C3" value={ref} onChangeText={setRef} autoCapitalize="characters" autoCorrect={false} />}
         </View>
 
         {!!info && (

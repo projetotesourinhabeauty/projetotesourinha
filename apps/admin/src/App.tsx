@@ -8,6 +8,7 @@ import Courses from './pages/Courses'
 import Dashboard from './pages/Dashboard'
 import Jobs from './pages/Jobs'
 import Login from './pages/Login'
+import Points from './pages/Points'
 import Professionals from './pages/Professionals'
 import Services from './pages/Services'
 import UsersPage from './pages/Users'
@@ -30,6 +31,7 @@ function Routed() {
         <Route path="cursos" element={<Courses />} />
         <Route path="vagas" element={<Jobs />} />
         <Route path="usuarios" element={<UsersPage />} />
+        <Route path="pontos" element={<Points />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

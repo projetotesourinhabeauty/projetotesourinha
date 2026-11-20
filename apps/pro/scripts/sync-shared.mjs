@@ -27,6 +27,8 @@ const shared = [
   'components/calendar.tsx',
   'components/notices.tsx',
   'components/icon.tsx',
+  'components/points-screen.tsx',
+  'data/points.ts',
 ]
 
 if (!existsSync(mobile(''))) {

@@ -70,6 +70,7 @@ export const noticeIcon = (kind: string) =>
     concluido: 'star',
     lembrete: 'alarm',
     aprovado: 'ribbon',
+    pontos: 'sparkles',
   }) as Record<string, string>)[kind] ?? 'notifications';
 
 /* ------------------------------------------------------------------ */

@@ -71,6 +71,7 @@ export default function Profile() {
           </ListGroup>
 
           <ListGroup title="Conta">
+            <ListRow icon="sparkles" title="Tesourinhas" subtitle="Pontos, nível e cupons de desconto" onPress={() => router.push('/points')} />
             <ListRow icon="person-outline" title="Meus dados" onPress={() => router.push('/edit-profile')} />
             <ListRow icon="notifications-outline" title="Notificações" subtitle="Novo agendamento, cancelamento e lembretes" onPress={() => router.push('/notifications')} />
             <ListRow icon="shield-checkmark-outline" title="Política de privacidade" onPress={openPrivacy} />
