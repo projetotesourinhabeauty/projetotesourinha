@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
@@ -49,7 +49,7 @@ export default function CourseDetail() {
             ['people-outline', 'Vagas', full ? 'Turma completa' : `${left} restantes`],
           ].map(([icon, label, value]) => (
             <View key={label} style={{ width: '50%', flexDirection: 'row', gap: 10, paddingRight: 8 }}>
-              <Ionicons name={icon as never} size={20} color={colors.brand} />
+              <Icon name={icon as never} size={20} color={colors.brand} />
               <View style={{ flex: 1 }}>
                 <Text variant="caption" color={colors.textSecondary}>{label}</Text>
                 <Text variant="subhead" weight="600">{value}</Text>
@@ -84,7 +84,7 @@ export default function CourseDetail() {
         </View>
 
         <View style={{ flexDirection: 'row', gap: spacing.md, padding: spacing.lg, borderRadius: radius.lg, backgroundColor: colors.brandSoft }}>
-          <Ionicons name="heart" size={20} color={colors.brand} />
+          <Icon name="heart" size={20} color={colors.brand} />
           <Text variant="footnote" color={colors.text} style={{ flex: 1 }}>
             Curso oferecido gratuitamente pela Associação Tesourinha. Alunos formados ganham destaque no app e acesso prioritário às vagas.
           </Text>

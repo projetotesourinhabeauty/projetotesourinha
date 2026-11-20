@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -31,7 +31,7 @@ export default function ProfessionalDetail() {
           <View style={{ position: 'absolute', top: insets.top + spacing.sm, left: spacing.xl, right: spacing.xl, flexDirection: 'row', justifyContent: 'space-between' }}>
             <BackButton tone="glass" />
             <PressableScale hapticStyle="selection" onPress={() => toggleFavorite(pro.id)} style={styles.roundBtn} accessibilityLabel="Favoritar">
-              <Ionicons name={fav ? 'heart' : 'heart-outline'} size={20} color={fav ? colors.brand : colors.white} />
+              <Icon name={fav ? 'heart' : 'heart-outline'} size={20} color={fav ? colors.brand : colors.white} />
             </PressableScale>
           </View>
         </View>
@@ -43,7 +43,7 @@ export default function ProfessionalDetail() {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: spacing.md }}>
               <Text variant="title2">{pro.name}</Text>
-              {pro.tesourinhaAlumni && <Ionicons name="ribbon" size={18} color={colors.brand} />}
+              {pro.tesourinhaAlumni && <Icon name="ribbon" size={18} color={colors.brand} />}
             </View>
             <Text variant="subhead" color={colors.textSecondary}>{pro.role} · {pro.neighborhood}</Text>
             {pro.tesourinhaAlumni && (
@@ -58,7 +58,7 @@ export default function ProfessionalDetail() {
                 [`${pro.yearsExperience} anos`, 'experiência', 'trophy'],
               ].map(([v, l, icon], i) => (
                 <View key={l} style={{ flex: 1, alignItems: 'center', gap: 2, borderLeftWidth: i ? 1 : 0, borderLeftColor: colors.separator }}>
-                  <Ionicons name={icon as never} size={16} color={colors.brand} />
+                  <Icon name={icon as never} size={16} color={colors.brand} />
                   <Text variant="headline">{v}</Text>
                   <Text variant="caption" color={colors.textSecondary}>{l}</Text>
                 </View>

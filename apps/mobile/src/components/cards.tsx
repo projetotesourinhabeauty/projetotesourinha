@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -22,7 +22,7 @@ export function ProfessionalRow({ pro, compact }: { pro: Professional; compact?:
       <View style={{ flex: 1, gap: 2 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <Text variant="headline" numberOfLines={1} style={{ flexShrink: 1 }}>{pro.name}</Text>
-          {pro.tesourinhaAlumni && <Ionicons name="ribbon" size={14} color={colors.brand} />}
+          {pro.tesourinhaAlumni && <Icon name="ribbon" size={14} color={colors.brand} />}
         </View>
         <Text variant="footnote" color={colors.textSecondary}>{pro.role}</Text>
         <Rating value={pro.rating} count={pro.reviewsCount} distanceKm={pro.distanceKm} />
@@ -33,7 +33,7 @@ export function ProfessionalRow({ pro, compact }: { pro: Professional; compact?:
           onPress={() => toggleFavorite(pro.id)}
           style={{ padding: 2 }}
           accessibilityLabel={fav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}>
-          <Ionicons name={fav ? 'heart' : 'heart-outline'} size={20} color={fav ? colors.brand : colors.textTertiary} />
+          <Icon name={fav ? 'heart' : 'heart-outline'} size={20} color={fav ? colors.brand : colors.textTertiary} />
         </PressableScale>
         <Button title="Agendar" size="sm" full={false} onPress={() => router.push({ pathname: '/book/[id]', params: { id: pro.id } })} />
       </View>
@@ -53,7 +53,7 @@ export function CourseRow({ course }: { course: Course }) {
         {course.coverUrl ? (
           <Image source={{ uri: course.coverUrl }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} />
         ) : (
-          <Ionicons name={course.icon} size={32} color={colors.brand} />
+          <Icon name={course.icon} size={32} color={colors.brand} />
         )}
       </View>
       <View style={{ flex: 1, gap: 3 }}>
@@ -64,7 +64,7 @@ export function CourseRow({ course }: { course: Course }) {
           <Badge label={`${course.durationHours}H · ${course.modality.toUpperCase()}`} tone="neutral" />
         </View>
       </View>
-      <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
+      <Icon name="chevron-forward" size={18} color={colors.textTertiary} />
     </PressableScale>
   );
 }

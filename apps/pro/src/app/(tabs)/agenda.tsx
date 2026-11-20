@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
@@ -36,7 +36,7 @@ export default function Agenda() {
             hitSlop={10}
             accessibilityLabel="Novo encaixe"
             style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' }}>
-            <Ionicons name="add" size={24} color={colors.white} />
+            <Icon name="add" size={24} color={colors.white} />
           </Pressable>
         }>
         <WeekStrip

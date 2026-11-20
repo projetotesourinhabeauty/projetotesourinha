@@ -7,13 +7,16 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ProProvider, usePro } from '@/store/pro-store';
+import { useAppFonts } from '@/lib/fonts';
 import { listenPushTaps } from '@/lib/notifications';
 import { colors } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function RootStack() {
-  const { ready } = usePro();
+  const { ready: dataReady } = usePro();
+  const fontsReady = useAppFonts();
+  const ready = dataReady && fontsReady;
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => {});
   }, [ready]);

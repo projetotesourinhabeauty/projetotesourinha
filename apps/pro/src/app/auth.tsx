@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
@@ -101,7 +101,7 @@ export default function Auth() {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <ScissorsMark size={44} />
           <Pressable onPress={() => router.back()} hitSlop={12} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center' }}>
-            <Ionicons name="close" size={18} color={colors.textSecondary} />
+            <Icon name="close" size={18} color={colors.textSecondary} />
           </Pressable>
         </View>
 
@@ -140,7 +140,7 @@ export default function Auth() {
                 </View>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.lg, borderRadius: radius.lg, backgroundColor: colors.brandSoft, borderWidth: 1, borderColor: colors.brandSoftBorder }}>
-                <Ionicons name="school" size={22} color={colors.brand} />
+                <Icon name="school" size={22} color={colors.brand} />
                 <View style={{ flex: 1 }}>
                   <Text variant="subhead" weight="600">Fiz curso na Associação Tesourinha</Text>
                   <Text variant="caption" color={colors.textSecondary}>Seu perfil ganha o selo de formado(a).</Text>
@@ -153,7 +153,7 @@ export default function Auth() {
 
         {!!error && (
           <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', marginTop: spacing.lg, padding: spacing.md, borderRadius: radius.md, backgroundColor: colors.dangerSoft }}>
-            <Ionicons name="alert-circle" size={18} color={colors.danger} />
+            <Icon name="alert-circle" size={18} color={colors.danger} />
             <Text variant="footnote" color={colors.danger} style={{ flex: 1 }}>{error}</Text>
           </View>
         )}
@@ -162,7 +162,7 @@ export default function Auth() {
 
         {!isSignup && (
           <View style={{ marginTop: spacing.xl, padding: spacing.md, borderRadius: radius.md, backgroundColor: colors.surface, flexDirection: 'row', gap: spacing.sm }}>
-            <Ionicons name="information-circle-outline" size={18} color={colors.textSecondary} />
+            <Icon name="information-circle-outline" size={18} color={colors.textSecondary} />
             <Text variant="footnote" color={colors.textSecondary} style={{ flex: 1 }}>
               Versão de demonstração: qualquer e-mail e senha entram na conta da profissional Ana Paula, com agenda de exemplo.
             </Text>

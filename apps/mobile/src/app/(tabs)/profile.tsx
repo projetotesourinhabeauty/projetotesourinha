@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, View } from 'react-native';
@@ -32,7 +32,7 @@ export default function Profile() {
               <Text variant="title3" weight="700">{user?.name}</Text>
               <Text variant="footnote" color={colors.textSecondary}>{user?.email}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
+            <Icon name="chevron-forward" size={18} color={colors.textTertiary} />
           </PressableScale>
 
           {/* Números */}
@@ -71,7 +71,7 @@ export default function Profile() {
           {/* Associação */}
           <PressableScale onPress={() => router.push('/association')} scaleTo={0.98} style={{ flexDirection: 'row', gap: spacing.md, alignItems: 'center', padding: spacing.lg, borderRadius: radius.xl, backgroundColor: colors.brandSoft, borderWidth: 1, borderColor: colors.brandSoftBorder }}>
             <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="heart-outline" size={26} color={colors.brand} />
+              <Icon name="heart-outline" size={26} color={colors.brand} />
             </View>
             <View style={{ flex: 1 }}>
               <Text variant="headline" weight="800">{association.name.toUpperCase()}</Text>

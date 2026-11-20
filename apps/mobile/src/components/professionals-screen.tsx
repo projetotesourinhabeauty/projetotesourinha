@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { useMemo, useState } from 'react';
 import { FlatList, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,7 +35,7 @@ export function ProfessionalsScreen({ back, initialCategory }: { back: boolean; 
       <ScreenHeader title="Profissionais" subtitle="Encontre os melhores perto de você" back={back}>
         <SearchBar placeholder="Nome, serviço ou bairro" value={query} onChangeText={setQuery} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: spacing.md }}>
-          <Ionicons name="location" size={14} color={colors.brand} />
+          <Icon name="location" size={14} color={colors.brand} />
           <Text variant="footnote" color={colors.textOnDarkSecondary}>São Paulo, SP · Próximo a você</Text>
         </View>
       </ScreenHeader>

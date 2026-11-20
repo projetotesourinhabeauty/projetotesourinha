@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -37,7 +37,7 @@ export default function Preview() {
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: spacing.md }}>
               <Text variant="title2">{profile.name}</Text>
-              {profile.tesourinhaAlumni && <Ionicons name="ribbon" size={18} color={colors.brand} />}
+              {profile.tesourinhaAlumni && <Icon name="ribbon" size={18} color={colors.brand} />}
             </View>
             <Text variant="subhead" color={colors.textSecondary}>{profile.role} · {profile.neighborhood}</Text>
             {profile.tesourinhaAlumni && (
@@ -52,7 +52,7 @@ export default function Preview() {
                 [`${profile.yearsExperience} anos`, 'experiência', 'trophy'],
               ].map(([v, l, icon], i) => (
                 <View key={l} style={{ flex: 1, alignItems: 'center', gap: 2, borderLeftWidth: i ? 1 : 0, borderLeftColor: colors.separator }}>
-                  <Ionicons name={icon as never} size={16} color={colors.brand} />
+                  <Icon name={icon as never} size={16} color={colors.brand} />
                   <Text variant="headline">{v}</Text>
                   <Text variant="caption" color={colors.textSecondary}>{l}</Text>
                 </View>

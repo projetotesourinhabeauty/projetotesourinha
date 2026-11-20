@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { Pressable, ScrollView, type ScrollViewInstance, Switch, View } from 'react-native';
@@ -90,7 +90,7 @@ export function AppointmentCard({ appt, overdue, highlight }: { appt: Appointmen
           {appt.source === 'encaixe' && <Badge label="ENCAIXE" tone="neutral" />}
         </View>
       </View>
-      <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
+      <Icon name="chevron-forward" size={18} color={colors.textTertiary} />
     </PressableScale>
   );
 }
@@ -136,7 +136,7 @@ export function StatTile({ icon, value, label, tone = 'light' }: { icon: IconNam
   const glass = tone === 'glass';
   return (
     <View style={{ flex: 1, gap: 6, padding: spacing.md, borderRadius: radius.lg, backgroundColor: glass ? 'rgba(255,255,255,0.16)' : colors.surface, ...(glass ? null : shadow.card) }}>
-      {glass ? <Ionicons name={icon} size={18} color={colors.white} /> : <IconTile icon={icon} size={32} />}
+      {glass ? <Icon name={icon} size={18} color={colors.white} /> : <IconTile icon={icon} size={32} />}
       <Text variant="headline" weight="800" color={glass ? colors.white : colors.text} numberOfLines={1} adjustsFontSizeToFit>{value}</Text>
       <Text variant="caption" color={glass ? 'rgba(255,255,255,0.85)' : colors.textSecondary}>{label}</Text>
     </View>
@@ -223,7 +223,7 @@ export function Stepper({ label, value, onMinus, onPlus, disabled }: { label?: s
       hitSlop={6}
       accessibilityLabel={a11y}
       style={({ pressed }) => ({ width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: pressed ? colors.brandSoftBorder : colors.brandSoft })}>
-      <Ionicons name={icon} size={18} color={disabled ? colors.textTertiary : colors.brand} />
+      <Icon name={icon} size={18} color={disabled ? colors.textTertiary : colors.brand} />
     </Pressable>
   );
   return (

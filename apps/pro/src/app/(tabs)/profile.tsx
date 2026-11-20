@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, View } from 'react-native';
@@ -35,11 +35,11 @@ export default function Profile() {
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text variant="title3" weight="700" numberOfLines={1} style={{ flexShrink: 1 }}>{profile.name}</Text>
-                {profile.tesourinhaAlumni && <Ionicons name="ribbon" size={16} color={colors.brand} />}
+                {profile.tesourinhaAlumni && <Icon name="ribbon" size={16} color={colors.brand} />}
               </View>
               <Text variant="footnote" color={colors.textSecondary}>{profile.role} · {profile.neighborhood}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
+            <Icon name="chevron-forward" size={18} color={colors.textTertiary} />
           </PressableScale>
 
           <View style={{ flexDirection: 'row', backgroundColor: colors.surface, borderRadius: radius.xl, paddingVertical: spacing.lg }}>
@@ -57,9 +57,9 @@ export default function Profile() {
 
           {missingBio && (
             <PressableScale onPress={() => router.push('/edit-profile')} scaleTo={0.98} style={{ flexDirection: 'row', gap: spacing.md, alignItems: 'center', padding: spacing.lg, borderRadius: radius.xl, backgroundColor: colors.brandSoft, borderWidth: 1, borderColor: colors.brandSoftBorder }}>
-              <Ionicons name="create-outline" size={22} color={colors.brand} />
+              <Icon name="create-outline" size={22} color={colors.brand} />
               <Text variant="subhead" style={{ flex: 1 }}>Escreva uma apresentação: perfis com bio recebem mais agendamentos.</Text>
-              <Ionicons name="chevron-forward" size={18} color={colors.brand} />
+              <Icon name="chevron-forward" size={18} color={colors.brand} />
             </PressableScale>
           )}
 
@@ -80,7 +80,7 @@ export default function Profile() {
 
           <PressableScale scaleTo={0.98} style={{ flexDirection: 'row', gap: spacing.md, alignItems: 'center', padding: spacing.lg, borderRadius: radius.xl, backgroundColor: colors.brandSoft, borderWidth: 1, borderColor: colors.brandSoftBorder }}>
             <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' }}>
-              <Ionicons name="school-outline" size={26} color={colors.brand} />
+              <Icon name="school-outline" size={26} color={colors.brand} />
             </View>
             <View style={{ flex: 1 }}>
               <Text variant="headline" weight="800">{association.name.toUpperCase()}</Text>

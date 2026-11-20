@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
@@ -26,7 +26,7 @@ export function NoticeBell({ app }: { app: AppKind }) {
       onPress={() => router.push('/notifications')}
       accessibilityLabel={count ? `Avisos, ${count} não lidos` : 'Avisos'}
       style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' }}>
-      <Ionicons name="notifications-outline" size={22} color={colors.white} />
+      <Icon name="notifications-outline" size={22} color={colors.white} />
       {count > 0 && (
         <View style={{ position: 'absolute', top: 6, right: 6, minWidth: 18, height: 18, paddingHorizontal: 4, borderRadius: 9, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.brand }}>
           <Text variant="caption" weight="700" color={colors.white} style={{ fontSize: 10, lineHeight: 12 }}>{count > 9 ? '9+' : count}</Text>
@@ -90,7 +90,7 @@ export function NoticesScreen({ app }: { app: AppKind }) {
               onPress={() => n.link && router.push(n.link as never)}
               style={{ flexDirection: 'row', gap: spacing.md, padding: spacing.lg, borderRadius: radius.lg, backgroundColor: n.read ? colors.surface : colors.brandSoft }}>
               <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: n.kind === 'cancelado' ? colors.dangerSoft : colors.surfaceMuted, alignItems: 'center', justifyContent: 'center' }}>
-                <Ionicons name={noticeIcon(n.kind) as never} size={20} color={n.kind === 'cancelado' ? colors.danger : colors.brand} />
+                <Icon name={noticeIcon(n.kind) as never} size={20} color={n.kind === 'cancelado' ? colors.danger : colors.brand} />
               </View>
               <View style={{ flex: 1, gap: 2 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm }}>

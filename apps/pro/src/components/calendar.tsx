@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 
@@ -37,10 +37,10 @@ export function MonthCalendar({ value, onChange }: { value: string | null; onCha
         <Text variant="headline">{monthLabel(cursor)}</Text>
         <View style={{ flexDirection: 'row', gap: spacing.lg }}>
           <Pressable onPress={() => canPrev && move(-1)} hitSlop={10} disabled={!canPrev} accessibilityLabel="Mês anterior">
-            <Ionicons name="chevron-back" size={22} color={canPrev ? colors.brand : colors.textTertiary} />
+            <Icon name="chevron-back" size={22} color={canPrev ? colors.brand : colors.textTertiary} />
           </Pressable>
           <Pressable onPress={() => move(1)} hitSlop={10} accessibilityLabel="Próximo mês">
-            <Ionicons name="chevron-forward" size={22} color={colors.brand} />
+            <Icon name="chevron-forward" size={22} color={colors.brand} />
           </Pressable>
         </View>
       </View>

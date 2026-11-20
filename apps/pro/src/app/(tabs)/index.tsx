@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -80,7 +80,7 @@ export default function Today() {
                 <Text variant="headline">Cadastre seus serviços</Text>
                 <Text variant="footnote" color={colors.textSecondary}>Escolha o que você atende e seus preços para começar a receber clientes.</Text>
               </View>
-              <Ionicons name="chevron-forward" size={18} color={colors.brand} />
+              <Icon name="chevron-forward" size={18} color={colors.brand} />
             </PressableScale>
           )}
 
@@ -107,7 +107,7 @@ export default function Today() {
                   </View>
                   {(next.notes || next.firstVisit) && (
                     <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start', padding: spacing.md, borderRadius: radius.md, backgroundColor: 'rgba(255,255,255,0.08)' }}>
-                      <Ionicons name={next.firstVisit ? 'sparkles' : 'document-text-outline'} size={16} color={colors.brand} style={{ marginTop: 1 }} />
+                      <Icon name={next.firstVisit ? 'sparkles' : 'document-text-outline'} size={16} color={colors.brand} style={{ marginTop: 1 }} />
                       <Text variant="footnote" color={colors.white} style={{ flex: 1 }}>
                         {next.firstVisit ? 'Primeira vez com você. ' : ''}{next.notes ?? ''}
                       </Text>

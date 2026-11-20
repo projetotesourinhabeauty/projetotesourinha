@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { Animated, View } from 'react-native';
@@ -36,7 +36,7 @@ export default function BookingSuccess() {
     <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top + spacing.huge, paddingHorizontal: spacing.xxl, paddingBottom: insets.bottom + spacing.xl }}>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.lg }}>
         <Animated.View style={{ transform: [{ scale }], width: 112, height: 112, borderRadius: 56, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' }}>
-          <Ionicons name="checkmark" size={64} color={colors.white} />
+          <Icon name="checkmark" size={64} color={colors.white} />
         </Animated.View>
         <Animated.View style={{ opacity: fade, alignItems: 'center', gap: spacing.sm, alignSelf: 'stretch' }}>
           <Text variant="title1" align="center">Horário confirmado!</Text>
@@ -58,7 +58,7 @@ export default function BookingSuccess() {
                 ['cash-outline', `A partir de ${formatPrice(service.priceFrom)} · pague no local`],
               ].map(([icon, label]) => (
                 <View key={icon} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-                  <Ionicons name={icon as never} size={18} color={colors.brand} />
+                  <Icon name={icon as never} size={18} color={colors.brand} />
                   <Text variant="subhead">{label}</Text>
                 </View>
               ))}

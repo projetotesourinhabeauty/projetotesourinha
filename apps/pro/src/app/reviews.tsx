@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { View } from 'react-native';
 
 import { Screen, ScreenHeader, Sheet } from '@/components/screen';
@@ -25,7 +25,7 @@ export default function Reviews() {
                 <Text variant="largeTitle">{rating.toFixed(1)}</Text>
                 <View style={{ flexDirection: 'row' }}>
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Ionicons key={i} name={i <= Math.round(rating) ? 'star' : 'star-outline'} size={14} color={colors.star} />
+                    <Icon key={i} name={i <= Math.round(rating) ? 'star' : 'star-outline'} size={14} color={colors.star} />
                   ))}
                 </View>
                 <Text variant="caption" color={colors.textSecondary} style={{ marginTop: 4 }}>{reviews.length} recentes</Text>

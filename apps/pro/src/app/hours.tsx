@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
@@ -104,13 +104,13 @@ export default function Hours() {
             <View style={{ gap: spacing.sm }}>
               {upcomingOff.map((t) => (
                 <View key={t.id} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md, borderRadius: radius.lg, backgroundColor: colors.surface }}>
-                  <Ionicons name="moon" size={20} color={colors.brand} />
+                  <Icon name="moon" size={20} color={colors.brand} />
                   <View style={{ flex: 1 }}>
                     <Text variant="subhead" weight="600">{formatDayLong(t.date)}</Text>
                     <Text variant="footnote" color={colors.textSecondary}>{t.reason}</Text>
                   </View>
                   <Pressable onPress={() => { haptic.light(); removeTimeOff(t.id); }} hitSlop={10} accessibilityLabel="Remover bloqueio">
-                    <Ionicons name="close-circle" size={22} color={colors.textTertiary} />
+                    <Icon name="close-circle" size={22} color={colors.textTertiary} />
                   </Pressable>
                 </View>
               ))}

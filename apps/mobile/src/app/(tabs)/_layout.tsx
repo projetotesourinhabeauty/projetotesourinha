@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { BlurView } from 'expo-blur';
 import { Redirect, Tabs } from 'expo-router';
 import { Platform, StyleSheet, View } from 'react-native';
@@ -51,7 +51,7 @@ export default function TabsLayout() {
             title: t.title,
             tabBarBadge: t.name === 'bookings' && upcoming > 0 ? upcoming : undefined,
             tabBarBadgeStyle: { backgroundColor: colors.brand, fontSize: 10 },
-            tabBarIcon: ({ color, focused }) => <Ionicons name={focused ? t.iconActive : t.icon} size={24} color={color as string} />,
+            tabBarIcon: ({ color, focused }) => <Icon name={focused ? t.iconActive : t.icon} size={24} color={color as string} />,
           }}
         />
       ))}

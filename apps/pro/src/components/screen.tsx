@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ReactNode } from 'react';
@@ -62,7 +62,7 @@ export function BackButton({ tone = 'dark' }: { tone?: 'dark' | 'light' | 'glass
       }}
       style={({ pressed }) => [styles.back, { backgroundColor: bg, opacity: pressed ? 0.6 : 1 }]}
       accessibilityLabel="Voltar">
-      <Ionicons name="chevron-back" size={22} color={fg} style={{ marginLeft: -2 }} />
+      <Icon name="chevron-back" size={22} color={fg} style={{ marginLeft: -2 }} />
     </Pressable>
   );
 }

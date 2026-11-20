@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
@@ -42,7 +42,7 @@ export default function Association() {
           <Button title="Quero apoiar a Associação" variant="outline" icon="heart-outline" onPress={() => router.push('/help')} />
         </View>
         <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'center', alignItems: 'center' }}>
-          <Ionicons name="sparkles" size={14} color={colors.brand} />
+          <Icon name="sparkles" size={14} color={colors.brand} />
           <Text variant="footnote" color={colors.textSecondary}>Qualificação · Oportunidade · Impacto social</Text>
         </View>
       </Sheet>

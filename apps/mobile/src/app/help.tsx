@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { useState } from 'react';
 import { Linking, Pressable, View } from 'react-native';
 
@@ -25,7 +25,7 @@ export default function Help() {
           <Card key={q} padded={false}>
             <Pressable onPress={() => { haptic.selection(); setOpen(open === i ? null : i); }} style={{ padding: spacing.lg, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
               <Text variant="headline" style={{ flex: 1 }}>{q}</Text>
-              <Ionicons name={open === i ? 'chevron-up' : 'chevron-down'} size={18} color={colors.textSecondary} />
+              <Icon name={open === i ? 'chevron-up' : 'chevron-down'} size={18} color={colors.textSecondary} />
             </Pressable>
             {open === i && <Text variant="subhead" color={colors.textSecondary} style={{ paddingHorizontal: spacing.lg, paddingBottom: spacing.lg }}>{a}</Text>}
           </Card>

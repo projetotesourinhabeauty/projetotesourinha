@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -52,7 +52,7 @@ export default function Welcome() {
             {BENEFITS.map((b) => (
               <View key={b.title} style={styles.benefit}>
                 <View style={styles.benefitIcon}>
-                  <Ionicons name={b.icon} size={20} color={colors.brand} />
+                  <Icon name={b.icon} size={20} color={colors.brand} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text variant="headline" color={colors.white}>{b.title}</Text>

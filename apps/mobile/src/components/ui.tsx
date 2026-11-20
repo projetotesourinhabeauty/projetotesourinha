@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useRef } from 'react';
@@ -15,13 +15,12 @@ import {
   TextProps,
   TextStyle,
   View,
-  ViewStyle,
-} from 'react-native';
+  ViewStyle, Platform } from 'react-native';
 
 import type { IconName } from '@/data/types';
 import { initials } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
-import { colors, gradients, radius, shadow, spacing, type } from '@/theme';
+import { androidFamily, colors, gradients, radius, shadow, spacing, type } from '@/theme';
 
 /* ------------------------------------------------------------------ */
 /* Text                                                                */
@@ -40,7 +39,14 @@ export function Text({
   return (
     <RNText
       {...rest}
-      style={[type[variant], { color }, weight ? { fontWeight: weight } : null, align ? { textAlign: align } : null, style]}
+      style={[
+        type[variant],
+        { color },
+        weight ? { fontWeight: weight } : null,
+        Platform.OS === 'android' ? { fontFamily: androidFamily(weight ?? type[variant].fontWeight), fontWeight: 'normal' } : null,
+        align ? { textAlign: align } : null,
+        style,
+      ]}
     />
   );
 }
@@ -129,9 +135,9 @@ export function Button({
         <ActivityIndicator color={p.fg} />
       ) : (
         <>
-          {icon && <Ionicons name={icon} size={fontSize + 3} color={p.fg} />}
+          {icon && <Icon name={icon} size={fontSize + 3} color={p.fg} />}
           <RNText style={[type.headline, { color: p.fg, fontSize }]}>{title}</RNText>
-          {iconRight && <Ionicons name={iconRight} size={fontSize + 3} color={p.fg} />}
+          {iconRight && <Icon name={iconRight} size={fontSize + 3} color={p.fg} />}
         </>
       )}
     </View>
@@ -223,7 +229,7 @@ export function IconTile({
   const fg = { soft: colors.brand, brand: colors.white, dark: colors.white, light: colors.text }[tone];
   return (
     <View style={{ width: size, height: size, borderRadius: size * 0.3, backgroundColor: bg, alignItems: 'center', justifyContent: 'center' }}>
-      <Ionicons name={icon} size={size * 0.5} color={fg} />
+      <Icon name={icon} size={size * 0.5} color={fg} />
     </View>
   );
 }
@@ -238,7 +244,7 @@ export function Chip({ label, active, onPress, icon }: { label: string; active?:
       onPress={onPress}
       hapticStyle="selection"
       style={[styles.chip, active ? { backgroundColor: colors.brand, borderColor: colors.brand } : null]}>
-      {icon && <Ionicons name={icon} size={14} color={active ? colors.white : colors.text} />}
+      {icon && <Icon name={icon} size={14} color={active ? colors.white : colors.text} />}
       <RNText style={[type.subhead, { fontWeight: '600', color: active ? colors.white : colors.text }]}>{label}</RNText>
     </PressableScale>
   );
@@ -251,12 +257,12 @@ export function Chip({ label, active, onPress, icon }: { label: string; active?:
 export function Rating({ value, count, distanceKm, color = colors.textSecondary }: { value: number; count?: number; distanceKm?: number; color?: string }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-      <Ionicons name="star" size={13} color={colors.star} />
+      <Icon name="star" size={13} color={colors.star} />
       <RNText style={[type.footnote, { color: colors.text, fontWeight: '600' }]}>{value.toFixed(1)}</RNText>
       {count !== undefined && <RNText style={[type.footnote, { color }]}>({count})</RNText>}
       {!!distanceKm && (
         <>
-          <Ionicons name="location-outline" size={13} color={color} style={{ marginLeft: 6 }} />
+          <Icon name="location-outline" size={13} color={color} style={{ marginLeft: 6 }} />
           <RNText style={[type.footnote, { color }]}>{distanceKm.toFixed(1).replace('.', ',')} km</RNText>
         </>
       )}
@@ -279,7 +285,7 @@ export function Badge({ label, tone = 'brand', icon }: { label: string; tone?: '
   const [bg, fg] = map[tone];
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: bg, paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.pill, alignSelf: 'flex-start' }}>
-      {icon && <Ionicons name={icon} size={11} color={fg} />}
+      {icon && <Icon name={icon} size={11} color={fg} />}
       <RNText style={[type.caption2, { color: fg }]}>{label}</RNText>
     </View>
   );
@@ -292,7 +298,7 @@ export function Badge({ label, tone = 'brand', icon }: { label: string; tone?: '
 export function SearchBar({ style, ...props }: TextInputProps & { style?: StyleProp<ViewStyle> }) {
   return (
     <View style={[styles.search, style]}>
-      <Ionicons name="search" size={18} color={colors.textSecondary} />
+      <Icon name="search" size={18} color={colors.textSecondary} />
       <TextInput
         placeholderTextColor={colors.textTertiary}
         style={[type.body, { flex: 1, color: colors.text, paddingVertical: 0, outlineStyle: 'none' } as unknown as TextStyle]}
@@ -315,7 +321,7 @@ export function Field({ label, icon, ...props }: TextInputProps & { label: strin
         {label.toUpperCase()}
       </Text>
       <View style={styles.field}>
-        {icon && <Ionicons name={icon} size={18} color={colors.textSecondary} />}
+        {icon && <Icon name={icon} size={18} color={colors.textSecondary} />}
         <TextInput
           placeholderTextColor={colors.textTertiary}
           style={[type.body, { flex: 1, color: colors.text, paddingVertical: 0, outlineStyle: 'none' } as unknown as TextStyle, props.multiline && { minHeight: 88, textAlignVertical: 'top' }]}
@@ -378,8 +384,8 @@ export function ListRow({
   return (
     <Pressable onPress={onPress && (() => { haptic.selection(); onPress(); })} style={({ pressed }) => [styles.row, pressed && onPress ? { backgroundColor: colors.surfaceMuted } : null]}>
       {left ?? (icon && (
-        <View style={[styles.rowIcon, destructive && { backgroundColor: colors.dangerSoft }]}>
-          <Ionicons name={icon} size={18} color={destructive ? colors.danger : colors.brand} />
+        <View style={[styles.rowIcon, destructive && { backgroundColor: colors.danger }]}>
+          <Icon name={icon} size={17} color={colors.white} weight="medium" />
         </View>
       ))}
       <View style={{ flex: 1 }}>
@@ -393,7 +399,7 @@ export function ListRow({
         )}
       </View>
       {value && <Text variant="subhead" color={colors.textSecondary}>{value}</Text>}
-      {right ?? (onPress && !destructive && <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />)}
+      {right ?? (onPress && !destructive && <Icon name="chevron-forward" size={14} color={colors.textTertiary} weight="semibold" />)}
     </Pressable>
   );
 }
@@ -468,5 +474,5 @@ const styles = StyleSheet.create({
   group: { backgroundColor: colors.surface, borderRadius: radius.xl, overflow: 'hidden' },
   groupSeparator: { height: StyleSheet.hairlineWidth, backgroundColor: colors.separator, marginLeft: 60 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: spacing.lg, paddingVertical: 13, minHeight: 52 },
-  rowIcon: { width: 32, height: 32, borderRadius: 9, backgroundColor: colors.brandSoft, alignItems: 'center', justifyContent: 'center' },
+  rowIcon: { width: 30, height: 30, borderRadius: 7, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' },
 });

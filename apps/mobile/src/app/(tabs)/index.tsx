@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -52,7 +52,7 @@ export default function Home() {
           <Text variant="subhead" color="rgba(255,255,255,0.9)" style={{ marginTop: 2 }}>Beleza que transforma vidas</Text>
 
           <PressableScale onPress={() => router.push('/(tabs)/explore')} scaleTo={0.98} style={[styles.search, shadow.card]}>
-            <Ionicons name="search" size={18} color={colors.textSecondary} />
+            <Icon name="search" size={18} color={colors.textSecondary} />
             <Text variant="callout" color={colors.textTertiary}>Buscar serviços ou profissionais</Text>
           </PressableScale>
         </LinearGradient>
@@ -62,7 +62,7 @@ export default function Home() {
           {categories.map((c) => (
             <PressableScale key={c.id} onPress={() => router.push({ pathname: '/professionals', params: { category: c.id } })} style={{ alignItems: 'center', gap: 8, width: 64 }}>
               <View style={styles.catCircle}>
-                <Ionicons name={c.icon} size={26} color={colors.white} />
+                <Icon name={c.icon} size={26} color={colors.white} />
               </View>
               <Text variant="caption" weight="600">{c.name}</Text>
             </PressableScale>
@@ -131,7 +131,7 @@ export default function Home() {
                 <PressableScale key={c.id} onPress={() => router.push({ pathname: '/courses/[id]', params: { id: c.id } })} style={styles.courseCard}>
                   <View style={styles.courseArt}>
                     <LinearGradient colors={['#2A2A2D', '#0B0B0C']} style={StyleSheet.absoluteFill} />
-                    <Ionicons name={c.icon} size={40} color={colors.brand} />
+                    <Icon name={c.icon} size={40} color={colors.brand} />
                     <View style={{ position: 'absolute', top: 10, left: 10 }}>
                       <Badge label="GRATUITO" />
                     </View>
@@ -148,13 +148,13 @@ export default function Home() {
           {/* Associação */}
           <PressableScale onPress={() => router.push('/association')} scaleTo={0.98} style={styles.assoc}>
             <View style={styles.assocIcon}>
-              <Ionicons name="heart-outline" size={26} color={colors.brand} />
+              <Icon name="heart-outline" size={26} color={colors.brand} />
             </View>
             <View style={{ flex: 1 }}>
               <Text variant="headline" weight="800">{association.name.toUpperCase()}</Text>
               <Text variant="footnote" color={colors.textSecondary}>{association.tagline}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.brand} />
+            <Icon name="chevron-forward" size={18} color={colors.brand} />
           </PressableScale>
         </View>
       </ScrollView>

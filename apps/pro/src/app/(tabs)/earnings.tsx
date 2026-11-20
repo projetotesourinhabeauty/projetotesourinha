@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 
@@ -95,11 +95,11 @@ export default function Earnings() {
         {/* Navegação de período */}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Pressable onPress={() => move(-1)} hitSlop={12} accessibilityLabel="Período anterior">
-            <Ionicons name="chevron-back" size={22} color={colors.brand} />
+            <Icon name="chevron-back" size={22} color={colors.brand} />
           </Pressable>
           <Text variant="headline">{label}</Text>
           <Pressable onPress={() => offset < 0 && move(1)} disabled={offset >= 0} hitSlop={12} accessibilityLabel="Próximo período">
-            <Ionicons name="chevron-forward" size={22} color={offset < 0 ? colors.brand : colors.textTertiary} />
+            <Icon name="chevron-forward" size={22} color={offset < 0 ? colors.brand : colors.textTertiary} />
           </Pressable>
         </View>
 
@@ -183,7 +183,7 @@ export default function Earnings() {
         </View>
 
         <View style={{ flexDirection: 'row', gap: spacing.md, padding: spacing.lg, borderRadius: radius.lg, backgroundColor: colors.surface }}>
-          <Ionicons name="information-circle-outline" size={20} color={colors.textSecondary} />
+          <Icon name="information-circle-outline" size={20} color={colors.textSecondary} />
           <Text variant="footnote" color={colors.textSecondary} style={{ flex: 1 }}>
             Por enquanto o pagamento é feito direto a você no atendimento. Pix e cartão pelo app estão no roadmap.
           </Text>

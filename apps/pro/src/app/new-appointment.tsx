@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
@@ -65,7 +65,7 @@ export default function NewAppointment() {
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
       <Text variant="title1">Novo encaixe</Text>
       <Pressable onPress={() => router.back()} hitSlop={12} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center' }} accessibilityLabel="Fechar">
-        <Ionicons name="close" size={18} color={colors.textSecondary} />
+        <Icon name="close" size={18} color={colors.textSecondary} />
       </Pressable>
     </View>
   );
@@ -135,7 +135,7 @@ export default function NewAppointment() {
 
         {!!error && (
           <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', padding: spacing.md, borderRadius: radius.md, backgroundColor: colors.dangerSoft }}>
-            <Ionicons name="alert-circle" size={18} color={colors.danger} />
+            <Icon name="alert-circle" size={18} color={colors.danger} />
             <Text variant="footnote" color={colors.danger} style={{ flex: 1 }}>{error}</Text>
           </View>
         )}

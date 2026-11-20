@@ -15,8 +15,10 @@ const shared = [
   'lib/supabase.ts',
   'lib/notifications.ts',
   'lib/account.ts',
+  'lib/fonts.ts',
   'data/catalog.ts',
   'data/types.ts',
+  'data/icons.ts',
   'data/mappers.ts',
   'data/remote-catalog.ts',
   'components/ui.tsx',
@@ -24,6 +26,7 @@ const shared = [
   'components/logo.tsx',
   'components/calendar.tsx',
   'components/notices.tsx',
+  'components/icon.tsx',
 ]
 
 if (!existsSync(mobile(''))) {

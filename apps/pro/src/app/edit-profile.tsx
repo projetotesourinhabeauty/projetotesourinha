@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -72,7 +72,7 @@ export default function EditProfile() {
             <Pressable onPress={pickPhoto} disabled={uploading} accessibilityRole="button" accessibilityLabel="Trocar foto de perfil">
               <Avatar name={name || profile.name} color={profile.avatarColor} uri={profile.avatarUrl} size={88} ring />
               <View style={{ position: 'absolute', right: -2, bottom: -2, width: 32, height: 32, borderRadius: 16, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: colors.white }}>
-                {uploading ? <ActivityIndicator size="small" color={colors.white} /> : <Ionicons name="camera" size={15} color={colors.white} />}
+                {uploading ? <ActivityIndicator size="small" color={colors.white} /> : <Icon name="camera" size={15} color={colors.white} />}
               </View>
             </Pressable>
             <Text variant="footnote" color={photoMsg.startsWith('Não') ? colors.danger : colors.textSecondary} align="center" style={{ marginTop: spacing.sm }}>

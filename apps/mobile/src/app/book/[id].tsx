@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
@@ -102,7 +102,7 @@ export default function Book() {
                   hapticStyle="selection"
                   onPress={() => setSvc(s.id)}
                   style={{ width: 150, padding: spacing.md, borderRadius: radius.lg, backgroundColor: active ? colors.black : colors.surface, borderWidth: 1, borderColor: active ? colors.black : colors.border, gap: 4 }}>
-                  <Ionicons name={s.icon} size={20} color={colors.brand} />
+                  <Icon name={s.icon} size={20} color={colors.brand} />
                   <Text variant="subhead" weight="600" color={active ? colors.white : colors.text} numberOfLines={1}>{s.name}</Text>
                   <Text variant="caption" color={active ? colors.textOnDarkSecondary : colors.textSecondary}>{formatDuration(s.durationMin)} · {formatPrice(s.priceFrom)}</Text>
                 </PressableScale>
@@ -119,14 +119,14 @@ export default function Book() {
           <Text variant="headline" style={{ marginBottom: spacing.md }}>Horário</Text>
           {!day ? (
             <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', padding: spacing.lg, borderRadius: radius.lg, backgroundColor: colors.surface }}>
-              <Ionicons name="calendar-outline" size={18} color={colors.textSecondary} />
+              <Icon name="calendar-outline" size={18} color={colors.textSecondary} />
               <Text variant="subhead" color={colors.textSecondary}>Selecione uma data para ver os horários livres.</Text>
             </View>
           ) : loadingSlots ? (
             <ActivityIndicator color={colors.brand} style={{ padding: spacing.xl }} />
           ) : avail?.dayOff || dayHours.length === 0 ? (
             <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', padding: spacing.lg, borderRadius: radius.lg, backgroundColor: colors.surface }}>
-              <Ionicons name="moon-outline" size={18} color={colors.textSecondary} />
+              <Icon name="moon-outline" size={18} color={colors.textSecondary} />
               <Text variant="subhead" color={colors.textSecondary}>Sem atendimento neste dia. Escolha outra data.</Text>
             </View>
           ) : (

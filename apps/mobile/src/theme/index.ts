@@ -56,8 +56,20 @@ export const radius = {
   pill: 999,
 } as const;
 
-const family = Platform.select({ ios: 'System', android: 'sans-serif', default: undefined });
-const familyMedium = Platform.select({ ios: 'System', android: 'sans-serif-medium', default: undefined });
+/** Pilha de fontes da web: SF Pro em aparelhos Apple, Inter nos demais. */
+const WEB_STACK = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", Inter, "Segoe UI", Roboto, system-ui, sans-serif';
+const family = Platform.select({ ios: 'System', android: 'Inter_400Regular', default: WEB_STACK });
+const familyMedium = Platform.select({ ios: 'System', android: 'Inter_600SemiBold', default: WEB_STACK });
+
+/** No Android cada peso da Inter é uma família própria (Inter_600SemiBold etc.). */
+export function androidFamily(weight?: TextStyle['fontWeight']): string {
+  const w = Number(weight === 'bold' ? 700 : weight === 'normal' || !weight ? 400 : weight);
+  if (w >= 800) return 'Inter_800ExtraBold';
+  if (w >= 700) return 'Inter_700Bold';
+  if (w >= 600) return 'Inter_600SemiBold';
+  if (w >= 500) return 'Inter_500Medium';
+  return 'Inter_400Regular';
+}
 
 /** Escala tipográfica inspirada no Human Interface Guidelines. */
 export const type = {

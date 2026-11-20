@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { Redirect, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, View } from 'react-native';
@@ -31,7 +31,7 @@ export default function Pending() {
 
         <View style={{ alignItems: 'center', gap: spacing.md, marginTop: spacing.lg }}>
           <View style={{ width: 84, height: 84, borderRadius: 42, backgroundColor: 'rgba(255,106,19,0.16)', alignItems: 'center', justifyContent: 'center' }}>
-            <Ionicons name="hourglass-outline" size={40} color={colors.brand} />
+            <Icon name="hourglass-outline" size={40} color={colors.brand} />
           </View>
           <Text variant="title1" color={colors.white} align="center">Cadastro em análise</Text>
           <Text variant="callout" color={colors.textOnDarkSecondary} align="center">
@@ -44,7 +44,7 @@ export default function Pending() {
             <View key={s.title} style={{ flexDirection: 'row', gap: spacing.md }}>
               <View style={{ alignItems: 'center' }}>
                 <View style={{ width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: s.done ? colors.success : i === 1 ? colors.brandSoft : colors.surfaceMuted }}>
-                  {s.done ? <Ionicons name="checkmark" size={16} color={colors.white} /> : <Text variant="footnote" weight="700" color={i === 1 ? colors.brand : colors.textTertiary}>{i + 1}</Text>}
+                  {s.done ? <Icon name="checkmark" size={16} color={colors.white} /> : <Text variant="footnote" weight="700" color={i === 1 ? colors.brand : colors.textTertiary}>{i + 1}</Text>}
                 </View>
                 {i < steps.length - 1 && <View style={{ width: 2, flex: 1, minHeight: 18, marginTop: 4, backgroundColor: colors.border }} />}
               </View>

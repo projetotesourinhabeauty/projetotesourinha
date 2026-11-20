@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
@@ -39,7 +39,7 @@ export default function Services() {
           </ListGroup>
         ))}
         <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
-          <Ionicons name="shield-checkmark-outline" size={16} color={colors.textSecondary} />
+          <Icon name="shield-checkmark-outline" size={16} color={colors.textSecondary} />
           <Text variant="footnote" color={colors.textSecondary}>Preços de referência. O valor final é definido pelo profissional.</Text>
         </View>
       </Sheet>

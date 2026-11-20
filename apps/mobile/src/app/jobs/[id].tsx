@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@/components/icon';
 import { router, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
@@ -16,7 +16,7 @@ function Bullets({ items, icon }: { items: string[]; icon: 'checkmark-circle' | 
     <Card style={{ gap: spacing.md }}>
       {items.map((t) => (
         <View key={t} style={{ flexDirection: 'row', gap: spacing.md, alignItems: 'center' }}>
-          <Ionicons name={icon} size={18} color={colors.brand} />
+          <Icon name={icon} size={18} color={colors.brand} />
           <Text variant="callout" style={{ flex: 1 }}>{t}</Text>
         </View>
       ))}
