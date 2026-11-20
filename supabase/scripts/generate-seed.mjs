@@ -20,12 +20,12 @@ const out = []
 out.push('-- Tesourinha Beauty · dados de demonstração (gerado por supabase/scripts/generate-seed.mjs)')
 out.push('-- Pode rodar mais de uma vez: usa ids fixos e "on conflict do nothing".\n')
 
-out.push('insert into public.services (id, category_id, name, description, duration_min, price_from, icon) values')
-out.push(cat.services.map((s) => `  (${q(uuid(s.id))}, ${q(s.categoryId)}, ${q(s.name)}, ${q(s.description)}, ${s.durationMin}, ${s.priceFrom}, ${q(s.icon)})`).join(',\n'))
+out.push('insert into public.services (id, slug, category_id, name, description, duration_min, price_from, icon) values')
+out.push(cat.services.map((s) => `  (${q(uuid(s.id))}, ${q(s.id)}, ${q(s.categoryId)}, ${q(s.name)}, ${q(s.description)}, ${s.durationMin}, ${s.priceFrom}, ${q(s.icon)})`).join(',\n'))
 out.push('on conflict (id) do nothing;\n')
 
-out.push('insert into public.professionals (id, name, role, bio, neighborhood, years_experience, tesourinha_alumni, rating, reviews_count, status, category_ids, slot_minutes) values')
-out.push(cat.professionals.map((p) => `  (${q(uuid(p.id))}, ${q(p.name)}, ${q(p.role)}, ${q(p.bio)}, ${q(p.neighborhood)}, ${p.yearsExperience}, ${p.tesourinhaAlumni}, ${p.rating}, ${p.reviewsCount}, 'aprovado', ${arr(p.categoryIds)}, 60)`).join(',\n'))
+out.push('insert into public.professionals (id, slug, name, role, bio, neighborhood, years_experience, tesourinha_alumni, rating, reviews_count, status, category_ids, slot_minutes) values')
+out.push(cat.professionals.map((p) => `  (${q(uuid(p.id))}, ${q(p.id)}, ${q(p.name)}, ${q(p.role)}, ${q(p.bio)}, ${q(p.neighborhood)}, ${p.yearsExperience}, ${p.tesourinhaAlumni}, ${p.rating}, ${p.reviewsCount}, 'aprovado', ${arr(p.categoryIds)}, 60)`).join(',\n'))
 out.push('on conflict (id) do nothing;\n')
 
 const links = cat.professionals.flatMap((p) => p.serviceIds.map((s) => `  (${q(uuid(p.id))}, ${q(uuid(s))})`))
@@ -46,12 +46,12 @@ out.push('insert into public.reviews (id, professional_id, author_name, rating, 
 out.push(reviews.join(',\n'))
 out.push('on conflict (id) do nothing;\n')
 
-out.push('insert into public.courses (id, title, subtitle, area, level, duration_hours, modality, start_date, seats, description, modules, certificate, icon, published) values')
-out.push(cat.courses.map((c) => `  (${q(uuid(c.id))}, ${q(c.title)}, ${q(c.subtitle)}, ${q(c.categoryId)}, ${q(c.level)}, ${c.durationHours}, ${q(c.modality)}, ${q(c.startDate)}, ${c.seats}, ${q(c.description)}, ${arr(c.modules)}, ${c.certificate}, ${q(c.icon)}, true)`).join(',\n'))
+out.push('insert into public.courses (id, slug, title, subtitle, area, level, duration_hours, modality, start_date, seats, description, modules, certificate, icon, published) values')
+out.push(cat.courses.map((c) => `  (${q(uuid(c.id))}, ${q(c.id)}, ${q(c.title)}, ${q(c.subtitle)}, ${q(c.categoryId)}, ${q(c.level)}, ${c.durationHours}, ${q(c.modality)}, ${q(c.startDate)}, ${c.seats}, ${q(c.description)}, ${arr(c.modules)}, ${c.certificate}, ${q(c.icon)}, true)`).join(',\n'))
 out.push('on conflict (id) do nothing;\n')
 
-out.push('insert into public.jobs (id, title, company, location, job_type, salary, description, requirements, benefits, icon, open, created_at) values')
-out.push(cat.jobs.map((j) => `  (${q(uuid(j.id))}, ${q(j.title)}, ${q(j.company)}, ${q(j.location)}, ${q(j.type)}, ${q(j.salary ?? null)}, ${q(j.description)}, ${arr(j.requirements)}, ${arr(j.benefits)}, ${q(j.icon)}, true, ${q(j.postedAt)})`).join(',\n'))
+out.push('insert into public.jobs (id, slug, title, company, location, job_type, salary, description, requirements, benefits, icon, open, created_at) values')
+out.push(cat.jobs.map((j) => `  (${q(uuid(j.id))}, ${q(j.id)}, ${q(j.title)}, ${q(j.company)}, ${q(j.location)}, ${q(j.type)}, ${q(j.salary ?? null)}, ${q(j.description)}, ${arr(j.requirements)}, ${arr(j.benefits)}, ${q(j.icon)}, true, ${q(j.postedAt)})`).join(',\n'))
 out.push('on conflict (id) do nothing;\n')
 
 writeFileSync('supabase/migrations/0004_seed_demo.sql', out.join('\n'))

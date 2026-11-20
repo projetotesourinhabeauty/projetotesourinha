@@ -10,6 +10,13 @@ alter table public.reviews
 alter table public.courses add column icon text;
 alter table public.jobs add column icon text;
 
+-- "slug": identificador curto e estável (ex.: 'p-ana'). Links antigos, como os da landing page,
+-- continuam funcionando porque o app aceita o id (uuid) ou o slug.
+alter table public.services add column slug text unique;
+alter table public.professionals add column slug text unique;
+alter table public.courses add column slug text unique;
+alter table public.jobs add column slug text unique;
+
 -- Vagas ocupadas por curso (a tabela enrollments é privada, então contamos numa view pública)
 create view public.course_enrollment_counts as
   select c.id as course_id, count(e.id) filter (where e.status in ('inscrito', 'concluído'))::int as taken
