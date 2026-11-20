@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, TextInput, View } from 'react-native';
@@ -6,6 +7,7 @@ import { ActivityIndicator, Pressable, RefreshControl, TextInput, View } from 'r
 import { Icon } from '@/components/icon';
 import { Screen, ScreenHeader, Sheet } from '@/components/screen';
 import { Badge, Button, Card, Chip, EmptyState, IconTile, ListGroup, ListRow, PressableScale, SectionHeader, Text } from '@/components/ui';
+import { heroPhotos, productPhoto } from '@/data/imagery';
 import { money } from '@/data/points';
 import { ORDER_STATUS, cancelOrder, cartStore, listOrders, loadShop, myCoupons, placeOrder, useCart, type Order, type Product, type Shop } from '@/data/shop';
 import { confirm, notify } from '@/lib/confirm';
@@ -80,16 +82,17 @@ export function ShopScreen() {
           <EmptyState icon="bag-handle-outline" title="Em breve" text="Os produtos da Loja Tesourinha aparecem aqui assim que forem cadastrados." />
         ) : (
           <>
-            {pro ? (
-              <View style={{ flexDirection: 'row', gap: spacing.md, alignItems: 'center', padding: spacing.lg, borderRadius: radius.lg, backgroundColor: colors.black }}>
-                <Icon name="ribbon" size={22} color={colors.brand} />
-                <Text variant="subhead" color={colors.white} style={{ flex: 1 }}>Preço Pro aplicado: profissionais aprovados pagam menos em todos os produtos.</Text>
+            <View style={{ borderRadius: radius.xl, overflow: 'hidden', minHeight: 150, justifyContent: 'flex-end', backgroundColor: colors.black }}>
+              <Image source={{ uri: heroPhotos.shop(900, 420) }} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} contentFit="cover" transition={300} />
+              <LinearGradient colors={['transparent', 'rgba(11,11,12,0.88)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+              <View style={{ padding: spacing.lg, gap: 4 }}>
+                {pro && <View style={{ alignSelf: 'flex-start' }}><Badge label="PREÇO PRO ATIVO" icon="ribbon" /></View>}
+                <Text variant="title3" weight="700" color={colors.white}>{pro ? 'Seu desconto de profissional já está aplicado' : 'Produtos profissionais para sua beleza'}</Text>
+                <Text variant="footnote" color="rgba(255,255,255,0.75)">
+                  {pro ? 'Profissionais aprovados pagam menos em todos os produtos.' : `Use seus cupons de pontos. Profissional aprovado compra com até ${shop.settings.proDiscountPct}% de desconto.`}
+                </Text>
               </View>
-            ) : (
-              <Text variant="footnote" color={colors.textSecondary}>
-                Profissional aprovado no app Tesourinha Pro compra com até {shop.settings.proDiscountPct}% de desconto.
-              </Text>
-            )}
+            </View>
             {cats.length > 2 && (
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
                 {cats.map((c) => <Chip key={c} label={c} active={c === cat} onPress={() => setCat(c)} />)}
@@ -102,7 +105,7 @@ export function ShopScreen() {
                 return (
                   <View key={p.id} style={{ flexBasis: '47%', flexGrow: 1, backgroundColor: colors.surface, borderRadius: radius.lg, overflow: 'hidden' }}>
                     <View style={{ aspectRatio: 1, backgroundColor: colors.surfaceMuted, alignItems: 'center', justifyContent: 'center' }}>
-                      {p.imageUrl ? <Image source={{ uri: p.imageUrl }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} /> : <IconTile icon="bag-handle" size={56} />}
+                      {productPhoto(p) ? <Image source={{ uri: productPhoto(p) }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} /> : <IconTile icon="bag-handle" size={56} />}
                       {out && <View style={{ position: 'absolute', top: 8, left: 8 }}><Badge label="ESGOTADO" tone="dark" /></View>}
                     </View>
                     <View style={{ padding: spacing.md, gap: 4, flex: 1 }}>

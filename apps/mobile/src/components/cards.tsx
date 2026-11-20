@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import { findProfessional, findService } from '@/data/catalog';
+import { courseCover } from '@/data/imagery';
 import type { Booking, Course, Job, Professional } from '@/data/types';
 import { dayParts, formatDuration, timeAgo } from '@/lib/format';
 import { haptic } from '@/lib/haptics';
@@ -50,11 +51,7 @@ export function CourseRow({ course, student }: { course: Course; student?: boole
       onPress={() => router.push({ pathname: student ? '/student/[id]' : '/courses/[id]', params: { id: course.id } })}
       style={{ flexDirection: 'row', gap: spacing.md, backgroundColor: colors.surface, padding: spacing.md, borderRadius: radius.xl, alignItems: 'center', ...shadow.card }}>
       <View style={{ width: 76, height: 76, borderRadius: radius.lg, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-        {course.coverUrl ? (
-          <Image source={{ uri: course.coverUrl }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} />
-        ) : (
-          <Icon name={course.icon} size={32} color={colors.brand} />
-        )}
+        <Image source={{ uri: courseCover(course, 240, 240) }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} />
       </View>
       <View style={{ flex: 1, gap: 3 }}>
         <Text variant="headline" numberOfLines={1}>{course.title}</Text>

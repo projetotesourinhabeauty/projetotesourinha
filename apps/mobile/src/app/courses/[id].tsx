@@ -5,6 +5,7 @@ import { View } from 'react-native';
 
 import { BottomBar, Screen, ScreenHeader, Sheet } from '@/components/screen';
 import { Badge, Button, Card, SectionHeader, Text } from '@/components/ui';
+import { courseCover } from '@/data/imagery';
 import { findCourse } from '@/data/catalog';
 import { notify } from '@/lib/confirm';
 import { formatDayLong } from '@/lib/format';
@@ -32,9 +33,9 @@ export default function CourseDetail() {
         </View>
       </ScreenHeader>
       <Sheet contentStyle={{ gap: spacing.xxl, paddingBottom: 160 }}>
-        {course.coverUrl && (
+        {(
           <Image
-            source={{ uri: course.coverUrl }}
+            source={{ uri: courseCover(course, 1000, 560) }}
             style={{ width: '100%', aspectRatio: 16 / 9, borderRadius: radius.xl, backgroundColor: colors.surfaceMuted }}
             contentFit="cover"
             transition={200}

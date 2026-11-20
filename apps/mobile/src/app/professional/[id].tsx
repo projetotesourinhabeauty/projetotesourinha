@@ -1,4 +1,5 @@
 import { Icon } from '@/components/icon';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton, BottomBar } from '@/components/screen';
 import { Avatar, Badge, Button, Card, IconTile, ListGroup, ListRow, PressableScale, Rating, SectionHeader, Text } from '@/components/ui';
 import { findProfessional, services } from '@/data/catalog';
+import { professionalCover, servicePhoto } from '@/data/imagery';
 import { formatDayShort, formatDuration, formatPrice } from '@/lib/format';
 import { useApp } from '@/store/app-store';
 import { colors, radius, spacing } from '@/theme';
@@ -27,7 +29,8 @@ export default function ProfessionalDetail() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}>
         {/* Capa */}
         <View style={{ height: 230 + insets.top, backgroundColor: colors.black }}>
-          <LinearGradient colors={['rgba(255,106,19,0.55)', 'rgba(255,106,19,0.05)']} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+          <Image source={{ uri: professionalCover(pro.categoryIds) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={300} />
+          <LinearGradient colors={['rgba(11,11,12,0.55)', 'rgba(11,11,12,0.15)', 'rgba(11,11,12,0.6)']} style={StyleSheet.absoluteFill} />
           <View style={{ position: 'absolute', top: insets.top + spacing.sm, left: spacing.xl, right: spacing.xl, flexDirection: 'row', justifyContent: 'space-between' }}>
             <BackButton tone="glass" />
             <PressableScale hapticStyle="selection" onPress={() => toggleFavorite(pro.id)} style={styles.roundBtn} accessibilityLabel="Favoritar">
@@ -77,7 +80,7 @@ export default function ProfessionalDetail() {
               {proServices.map((s) => (
                 <ListRow
                   key={s.id}
-                  left={<IconTile icon={s.icon} size={40} />}
+                  left={<Image source={{ uri: servicePhoto(s, 160, 160) }} style={{ width: 44, height: 44, borderRadius: 10, backgroundColor: colors.surfaceMuted }} contentFit="cover" transition={200} />}
                   title={s.name}
                   subtitle={`${formatDuration(s.durationMin)} · a partir de ${formatPrice(s.priceFrom)}`}
                   onPress={() => router.push({ pathname: '/book/[id]', params: { id: pro.id, serviceId: s.id } })}

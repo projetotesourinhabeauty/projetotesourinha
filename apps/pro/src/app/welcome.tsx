@@ -1,4 +1,5 @@
 import { Icon } from '@/components/icon';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -8,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Logo } from '@/components/logo';
 import { Badge, Button, Text } from '@/components/ui';
+import { heroPhotos } from '@/data/imagery';
 import type { IconName } from '@/data/types';
 import { colors, radius, spacing } from '@/theme';
 
@@ -32,6 +34,8 @@ export default function Welcome() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.black }}>
       <StatusBar style="light" />
+      <Image source={{ uri: heroPhotos.welcomePro(1200) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={400} />
+      <LinearGradient colors={['rgba(11,11,12,0.6)', 'rgba(11,11,12,0.45)', 'rgba(11,11,12,0.95)']} locations={[0, 0.4, 0.75]} style={StyleSheet.absoluteFill} />
       <LinearGradient
         colors={['rgba(255,106,19,0.42)', 'rgba(255,106,19,0.08)', 'transparent']}
         start={{ x: 0.9, y: 0 }}

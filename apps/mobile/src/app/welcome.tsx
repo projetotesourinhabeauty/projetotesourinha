@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -7,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Logo } from '@/components/logo';
 import { Button, Text } from '@/components/ui';
+import { heroPhotos } from '@/data/imagery';
 import { colors, spacing } from '@/theme';
 
 const PILLARS = ['Beleza', 'Educação', 'Oportunidade', 'Impacto Social'];
@@ -26,15 +28,16 @@ export default function Welcome() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.black }}>
       <StatusBar style="light" />
+      <Image source={{ uri: heroPhotos.welcomeClient(1200) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={400} />
+      <LinearGradient colors={['rgba(11,11,12,0.55)', 'rgba(11,11,12,0.35)', 'rgba(11,11,12,0.92)']} locations={[0, 0.4, 0.78]} style={StyleSheet.absoluteFill} />
       {/* brilho laranja de fundo */}
       <LinearGradient
-        colors={['rgba(255,106,19,0.42)', 'rgba(255,106,19,0.08)', 'transparent']}
+        colors={['rgba(255,106,19,0.38)', 'rgba(255,106,19,0.06)', 'transparent']}
         start={{ x: 0.9, y: 0 }}
         end={{ x: 0.2, y: 0.75 }}
         style={StyleSheet.absoluteFill}
       />
-      <LinearGradient colors={['transparent', 'rgba(0,0,0,0.9)']} start={{ x: 0, y: 0.45 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-
+      
       <Animated.View style={{ flex: 1, opacity: fade, transform: [{ translateY: rise }], paddingTop: insets.top + spacing.huge, paddingHorizontal: spacing.xxl }}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <Logo />

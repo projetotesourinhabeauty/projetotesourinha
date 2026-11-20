@@ -1,4 +1,5 @@
 import { Icon } from '@/components/icon';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -6,10 +7,10 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BookingCard } from '@/components/cards';
-import { ScissorsMark } from '@/components/logo';
 import { NoticeBell } from '@/components/notices';
 import { Avatar, Badge, Button, IconTile, PressableScale, Rating, SectionHeader, Text } from '@/components/ui';
 import { association, categories, courses, professionals } from '@/data/catalog';
+import { categoryPhoto, courseCover, heroPhotos } from '@/data/imagery';
 import type { IconName } from '@/data/types';
 import { greeting } from '@/lib/format';
 import { useApp } from '@/store/app-store';
@@ -62,7 +63,7 @@ export default function Home() {
           {categories.map((c) => (
             <PressableScale key={c.id} onPress={() => router.push({ pathname: '/professionals', params: { category: c.id } })} style={{ alignItems: 'center', gap: 8, width: 64 }}>
               <View style={styles.catCircle}>
-                <Icon name={c.icon} size={26} color={colors.white} />
+                <Image source={{ uri: categoryPhoto(c.id, 180) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={250} accessibilityLabel={c.name} />
               </View>
               <Text variant="caption" weight="600">{c.name}</Text>
             </PressableScale>
@@ -72,11 +73,9 @@ export default function Home() {
         <View style={{ paddingHorizontal: spacing.xl, gap: spacing.xxl, marginTop: spacing.xl }}>
           {/* Banner */}
           <PressableScale onPress={() => router.push('/services')} scaleTo={0.98} style={[styles.banner, shadow.floating]}>
-            <LinearGradient colors={['#1C1C1E', '#0B0B0C']} style={StyleSheet.absoluteFill} />
-            <LinearGradient colors={['rgba(255,106,19,0.35)', 'transparent']} start={{ x: 1, y: 0 }} end={{ x: 0.3, y: 0.8 }} style={StyleSheet.absoluteFill} />
-            <View style={{ position: 'absolute', right: -18, bottom: -10, opacity: 0.95, transform: [{ rotate: '-12deg' }] }}>
-              <ScissorsMark size={150} />
-            </View>
+            <Image source={{ uri: heroPhotos.homeBanner(900, 560) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={300} />
+            <LinearGradient colors={['rgba(11,11,12,0.92)', 'rgba(11,11,12,0.6)', 'rgba(11,11,12,0.05)']} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={['rgba(255,106,19,0.28)', 'transparent']} start={{ x: 0, y: 1 }} end={{ x: 0.6, y: 0.3 }} style={StyleSheet.absoluteFill} />
             <View style={{ padding: spacing.xl, gap: 4, maxWidth: '68%' }}>
               <Badge label="NOVIDADE" tone="brand" />
               <Text variant="title2" color={colors.white} style={{ marginTop: 8 }}>Realce sua beleza,</Text>
@@ -99,7 +98,9 @@ export default function Home() {
           </View>
 
           {/* Loja */}
-          <PressableScale onPress={() => router.push('/shop')} scaleTo={0.98} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.lg, borderRadius: radius.xl, backgroundColor: colors.black }}>
+          <PressableScale onPress={() => router.push('/shop')} scaleTo={0.98} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.lg, minHeight: 96, borderRadius: radius.xl, backgroundColor: colors.black, overflow: 'hidden' }}>
+            <Image source={{ uri: heroPhotos.shop(900, 300) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={300} />
+            <LinearGradient colors={['rgba(11,11,12,0.9)', 'rgba(11,11,12,0.55)', 'rgba(11,11,12,0.15)']} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
             <IconTile icon="bag-handle" size={44} tone="brand" />
             <View style={{ flex: 1 }}>
               <Text variant="headline" color={colors.white}>Loja Tesourinha</Text>
@@ -140,8 +141,8 @@ export default function Home() {
               {courses.slice(0, 5).map((c) => (
                 <PressableScale key={c.id} onPress={() => router.push({ pathname: '/courses/[id]', params: { id: c.id } })} style={styles.courseCard}>
                   <View style={styles.courseArt}>
-                    <LinearGradient colors={['#2A2A2D', '#0B0B0C']} style={StyleSheet.absoluteFill} />
-                    <Icon name={c.icon} size={40} color={colors.brand} />
+                    <Image source={{ uri: courseCover(c, 500, 280) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={250} />
+                    <LinearGradient colors={['rgba(0,0,0,0.25)', 'transparent']} style={StyleSheet.absoluteFill} />
                     <View style={{ position: 'absolute', top: 10, left: 10 }}>
                       <Badge label="GRATUITO" />
                     </View>
@@ -189,12 +190,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     backgroundColor: colors.white,
   },
-  catCircle: { width: 60, height: 60, borderRadius: 30, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center' },
+  catCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.black, overflow: 'hidden', borderWidth: 2, borderColor: colors.white, ...shadow.card },
   banner: { borderRadius: radius.xxl, overflow: 'hidden', minHeight: 190, justifyContent: 'center', backgroundColor: colors.black },
   quick: { flex: 1, alignItems: 'center', gap: 8, paddingVertical: spacing.lg, paddingHorizontal: 4, backgroundColor: colors.surface, borderRadius: radius.xl, ...shadow.card },
   proCard: { width: 150, padding: spacing.lg, backgroundColor: colors.surface, borderRadius: radius.xl, alignItems: 'flex-start', ...shadow.card },
   courseCard: { width: 210, backgroundColor: colors.surface, borderRadius: radius.xl, overflow: 'hidden', ...shadow.card },
-  courseArt: { height: 110, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  courseArt: { height: 120, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   assoc: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.lg, borderRadius: radius.xl, backgroundColor: colors.brandSoft, borderWidth: 1, borderColor: colors.brandSoftBorder },
   assocIcon: { width: 52, height: 52, borderRadius: 26, backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' },
 });

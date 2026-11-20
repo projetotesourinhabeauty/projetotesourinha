@@ -1,9 +1,11 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 
 import { Toggle } from '@/components/pro';
 import { Screen, ScreenHeader, Sheet } from '@/components/screen';
-import { IconTile, ListGroup, ListRow } from '@/components/ui';
+import { ListGroup, ListRow } from '@/components/ui';
 import { categories, services as catalog } from '@/data/catalog';
+import { servicePhoto } from '@/data/imagery';
 import { formatDuration, formatPrice } from '@/lib/format';
 import { usePro } from '@/store/pro-store';
 import { spacing } from '@/theme';
@@ -32,7 +34,7 @@ export default function Services() {
                 return (
                   <ListRow
                     key={s.id}
-                    left={<IconTile icon={s.icon} size={40} tone={o ? 'soft' : 'light'} />}
+                    left={<Image source={{ uri: servicePhoto(s, 160, 160) }} style={{ width: 44, height: 44, borderRadius: 10, opacity: o ? 1 : 0.45 }} contentFit="cover" transition={200} />}
                     title={s.name}
                     subtitle={o ? `${formatPrice(o.price)} · ${formatDuration(o.durationMin)}` : `Média no app: a partir de ${formatPrice(s.priceFrom)}`}
                     onPress={o ? () => router.push({ pathname: '/service/[id]', params: { id: s.id } }) : undefined}

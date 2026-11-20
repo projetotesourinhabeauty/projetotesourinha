@@ -1,4 +1,5 @@
 import { categories, professionals, services } from '../../mobile/src/data/catalog'
+import { servicePhoto } from '../../mobile/src/data/imagery'
 import type { Professional, Service } from '../../mobile/src/data/types'
 import { formatDayLong, formatDuration, formatPrice, toDayKey } from '../../mobile/src/lib/format'
 import { contact, courses, whatsappLink } from './content'
@@ -46,6 +47,7 @@ const cardsHtml = services
   .map(
     (s, i) => `
   <article class="svc-card" data-svc-card="${s.id}" style="--i:${i}">
+    <div class="svc-card__img"><img src="${servicePhoto(s, 640, 400)}" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
     <p class="svc-card__cat">${esc(categoryName(s.categoryId))}</p>
     <h3 class="svc-card__name">${esc(s.name)}</h3>
     <p class="svc-card__desc">${esc(s.description)}</p>

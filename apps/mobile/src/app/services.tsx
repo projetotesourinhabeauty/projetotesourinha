@@ -1,11 +1,13 @@
 import { Icon } from '@/components/icon';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 
 import { Screen, ScreenHeader, Sheet } from '@/components/screen';
-import { EmptyState, IconTile, ListGroup, ListRow, SearchBar, Text } from '@/components/ui';
+import { EmptyState, ListGroup, ListRow, SearchBar, Text } from '@/components/ui';
 import { categories, services } from '@/data/catalog';
+import { servicePhoto } from '@/data/imagery';
 import { formatDuration, formatPrice } from '@/lib/format';
 import { colors, spacing } from '@/theme';
 
@@ -30,7 +32,7 @@ export default function Services() {
             {items.map((s) => (
               <ListRow
                 key={s.id}
-                left={<IconTile icon={s.icon} size={40} />}
+                left={<Image source={{ uri: servicePhoto(s, 160, 160) }} style={{ width: 52, height: 52, borderRadius: 12, backgroundColor: colors.surfaceMuted }} contentFit="cover" transition={200} />}
                 title={s.name}
                 subtitle={`${formatDuration(s.durationMin)} · a partir de ${formatPrice(s.priceFrom)}`}
                 onPress={() => router.push({ pathname: '/professionals', params: { category: s.categoryId } })}

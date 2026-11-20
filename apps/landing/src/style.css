@@ -298,7 +298,7 @@ button { cursor: pointer; }
   --notch: 12px;
   flex: 0 0 clamp(15.5rem, 21vw, 18.5rem);
   display: flex; flex-direction: column;
-  min-height: min(27rem, 66svh);
+  min-height: min(34rem, 78svh);
   padding: var(--sc-6) var(--sc-5) var(--sc-5);
   background: var(--sc-surface);
   border-radius: var(--r);
@@ -313,6 +313,9 @@ button { cursor: pointer; }
   transition: background-color 200ms var(--sc-ease-out);
 }
 .svc-card.is-on { background: #2a1a10; box-shadow: inset 0 0 0 1.5px var(--sc-accent), var(--sc-e2); }
+.svc-card__img { margin: calc(var(--sc-6) * -1 + 6px) calc(var(--sc-5) * -1 + 6px) var(--sc-4); aspect-ratio: 16 / 10; border-radius: calc(var(--r) - 6px); overflow: hidden; background: #1c1917; }
+.svc-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.95) contrast(1.02); transition: transform 0.6s cubic-bezier(.2,.7,.2,1); }
+.svc-card:hover .svc-card__img img { transform: scale(1.04); }
 .svc-card__cat { margin: 0; font-size: var(--sc-t-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--sc-accent); font-weight: 600; }
 .svc-card__name { margin: var(--sc-3) 0 0; font-family: var(--sc-font-display); font-weight: 800; font-stretch: 84%; font-size: var(--sc-t-xl); line-height: 1.04; letter-spacing: -0.02em; text-wrap: balance; }
 .svc-card__desc { margin: var(--sc-3) 0 0; color: var(--sc-ink-soft); font-size: var(--sc-t-sm); line-height: 1.55; }
