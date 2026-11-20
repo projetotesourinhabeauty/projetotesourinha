@@ -33,7 +33,7 @@ export default function Preview() {
         <View style={{ paddingHorizontal: spacing.xl, marginTop: -64, gap: spacing.xxl }}>
           <Card style={{ alignItems: 'center', paddingTop: 0 }}>
             <View style={{ marginTop: -48 }}>
-              <Avatar name={profile.name} color={profile.avatarColor} size={96} ring />
+              <Avatar name={profile.name} color={profile.avatarColor} uri={profile.avatarUrl} size={96} ring />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: spacing.md }}>
               <Text variant="title2">{profile.name}</Text>

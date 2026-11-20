@@ -95,7 +95,7 @@ export default function Dashboard() {
           <div style={{ paddingTop: 10 }}>
             {topPros.map(({ p, n }) => (
               <div className="list-row" key={p.id}>
-                <Avatar name={p.name} color={p.avatarColor} />
+                <Avatar name={p.name} color={p.avatarColor} src={p.imageUrl} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
                     <strong>{p.name}</strong>

@@ -1,7 +1,7 @@
 import { CalendarDays, Clock, Pencil, Plus, Users } from 'lucide-react'
 import { useState } from 'react'
 
-import { Avatar, Badge, Drawer, Field, PageHeader, Switch, useToast } from '../components/ui'
+import { Avatar, Badge, Drawer, Field, ImageUpload, PageHeader, Switch, useToast } from '../components/ui'
 import { fmtDate, useStore, type AdminCourse } from '../data/store'
 import { courseCategories } from '@shared/catalog'
 import type { Course } from '@shared/types'
@@ -25,7 +25,7 @@ const blank = (): AdminCourse => ({
 })
 
 export default function Courses() {
-  const { db, upsert, patch } = useStore()
+  const { db, upsert, patch, upload } = useStore()
   const toast = useToast()
   const [edit, setEdit] = useState<AdminCourse | null>(null)
   const [students, setStudents] = useState<AdminCourse | null>(null)
@@ -44,6 +44,7 @@ export default function Courses() {
           const full = c.seatsTaken >= c.seats
           return (
             <div className="card course-card" key={c.id} style={{ opacity: c.published ? 1 : 0.6 }}>
+              {c.coverUrl && <img className="cover-preview" src={c.coverUrl} alt={`Capa do curso ${c.title}`} />}
               <div className="row">
                 <Badge tone={c.published ? (full ? 'orange' : 'green') : 'gray'}>{!c.published ? 'Rascunho' : full ? 'Turma cheia' : 'Inscrições abertas'}</Badge>
                 <Switch on={c.published} label="Publicado" onChange={(v) => { patch('courses', c.id, { published: v }); toast(v ? 'Curso publicado' : 'Curso ocultado do app') }} />
@@ -84,6 +85,18 @@ export default function Courses() {
         }>
         {edit && (
           <>
+            <Field label="Foto de capa">
+              <div style={{ display: 'grid', gap: 10 }}>
+                {edit.coverUrl && <img className="cover-preview" src={edit.coverUrl} alt="Capa do curso" />}
+                <ImageUpload
+                  value={edit.coverUrl}
+                  onChange={(url) => setEdit((e) => (e ? { ...e, coverUrl: url } : e))}
+                  upload={(f) => upload(f, 'curso')}
+                  label="Enviar capa"
+                  hint="Foto horizontal (16:9), JPG, PNG ou WebP até 5 MB. Aparece no app do cliente."
+                />
+              </div>
+            </Field>
             <Field label="Título"><input value={edit.title} onChange={(e) => setEdit({ ...edit, title: e.target.value })} placeholder="Ex.: Curso de Cabeleireiro" /></Field>
             <Field label="Subtítulo"><input value={edit.subtitle} onChange={(e) => setEdit({ ...edit, subtitle: e.target.value })} /></Field>
             <div className="fields-2">

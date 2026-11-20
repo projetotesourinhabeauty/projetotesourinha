@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
@@ -31,6 +32,15 @@ export default function CourseDetail() {
         </View>
       </ScreenHeader>
       <Sheet contentStyle={{ gap: spacing.xxl, paddingBottom: 160 }}>
+        {course.coverUrl && (
+          <Image
+            source={{ uri: course.coverUrl }}
+            style={{ width: '100%', aspectRatio: 16 / 9, borderRadius: radius.xl, backgroundColor: colors.surfaceMuted }}
+            contentFit="cover"
+            transition={200}
+            accessibilityLabel={`Foto do curso ${course.title}`}
+          />
+        )}
         <Card style={{ flexDirection: 'row', flexWrap: 'wrap', rowGap: spacing.lg }}>
           {[
             ['time-outline', 'Carga horária', `${course.durationHours} horas`],

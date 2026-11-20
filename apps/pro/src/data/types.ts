@@ -71,6 +71,8 @@ export interface Course {
   description: string;
   modules: string[];
   certificate: boolean;
+  /** Foto de capa (Supabase Storage). */
+  coverUrl?: string;
 }
 
 export type JobType = 'Tempo integral' | 'Meio período' | 'Freelance' | 'Comissionado';

@@ -55,7 +55,7 @@ export default function Today() {
             </View>
             <PressableScale onPress={() => router.push('/(tabs)/profile')}>
               <View style={{ borderWidth: 2, borderColor: 'rgba(255,255,255,0.7)', borderRadius: 24 }}>
-                <Avatar name={profile?.name ?? 'T P'} color={colors.black} size={44} />
+                <Avatar name={profile?.name ?? 'T P'} color={colors.black} uri={profile?.avatarUrl} size={44} />
               </View>
             </PressableScale>
           </View>

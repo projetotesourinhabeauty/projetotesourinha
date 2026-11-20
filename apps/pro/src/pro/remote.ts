@@ -91,6 +91,7 @@ export async function loadPro(uid: string, email: string): Promise<RemoteLoad> {
     tesourinhaAlumni: !!pro.tesourinha_alumni,
     categoryIds: pro.category_ids ?? [],
     avatarColor: '#FF8A3D',
+    avatarUrl: pro.avatar_url ?? undefined,
   };
 
   return {
@@ -143,6 +144,7 @@ export async function updateProfile(id: string, p: Partial<ProProfile>) {
   if (p.neighborhood !== undefined) row.neighborhood = p.neighborhood;
   if (p.yearsExperience !== undefined) row.years_experience = p.yearsExperience;
   if (p.categoryIds !== undefined) row.category_ids = p.categoryIds;
+  if (p.avatarUrl !== undefined) row.avatar_url = p.avatarUrl;
   // "Formado pela Tesourinha" só o admin altera (selo verificado).
   if (!Object.keys(row).length) return;
   const { error } = await sb().from('professionals').update(row).eq('id', id);
@@ -220,4 +222,17 @@ export async function insertTimeOff(professionalId: string, date: string, reason
 export async function deleteTimeOff(id: string) {
   const { error } = await sb().from('time_off').delete().eq('id', id);
   if (error) throw new Error(error.message);
+}
+
+/**
+ * Envia uma foto (URI local do seletor de imagens) para o bucket "fotos",
+ * na pasta do próprio usuário, e devolve a URL pública.
+ */
+export async function uploadPhoto(uid: string, uri: string, mimeType = 'image/jpeg'): Promise<string> {
+  const ext = mimeType.includes('png') ? 'png' : mimeType.includes('webp') ? 'webp' : 'jpg';
+  const path = `${uid}/perfil-${Date.now()}.${ext}`;
+  const body = await (await fetch(uri)).arrayBuffer();
+  const { error } = await sb().storage.from('fotos').upload(path, body, { contentType: mimeType, upsert: false });
+  if (error) throw new Error(error.message);
+  return sb().storage.from('fotos').getPublicUrl(path).data.publicUrl;
 }

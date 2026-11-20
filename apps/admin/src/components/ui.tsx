@@ -1,5 +1,5 @@
-import { CheckCircle2, Search, X } from 'lucide-react'
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
+import { Camera, CheckCircle2, Loader2, Search, Trash2, X } from 'lucide-react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 
 import { initials } from '../data/store'
 
@@ -39,10 +39,59 @@ export function PageHeader({ title, subtitle, children }: { title: string; subti
   )
 }
 
-export function Avatar({ name, color, size }: { name: string; color?: string; size?: 'lg' }) {
+export function Avatar({ name, color, size, src }: { name: string; color?: string; size?: 'lg'; src?: string }) {
+  if (src) return <img className={`avatar ${size ?? ''}`} src={src} alt={name} style={{ objectFit: 'cover' }} />
   return (
     <div className={`avatar ${size ?? ''}`} style={color ? { background: `linear-gradient(135deg, ${color}, ${color}cc)` } : undefined}>
       {initials(name)}
+    </div>
+  )
+}
+
+/** Botão de envio de foto: escolhe o arquivo, envia e devolve a URL. */
+export function ImageUpload({
+  value,
+  onChange,
+  upload,
+  label = 'Enviar foto',
+  hint,
+}: {
+  value?: string
+  onChange: (url: string | undefined) => void
+  upload: (file: File) => Promise<string>
+  label?: string
+  hint?: string
+}) {
+  const input = useRef<HTMLInputElement>(null)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const pick = async (file?: File) => {
+    if (!file) return
+    setBusy(true)
+    setErr('')
+    try {
+      onChange(await upload(file))
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
+      if (input.current) input.current.value = ''
+    }
+  }
+  return (
+    <div style={{ display: 'grid', gap: 6 }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button type="button" className="btn sm" disabled={busy} onClick={() => input.current?.click()}>
+          {busy ? <Loader2 size={13} className="spin" /> : <Camera size={13} />} {busy ? 'Enviando…' : value ? 'Trocar foto' : label}
+        </button>
+        {value && !busy && (
+          <button type="button" className="btn sm ghost" onClick={() => onChange(undefined)}>
+            <Trash2 size={13} /> Remover
+          </button>
+        )}
+      </div>
+      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={(e) => void pick(e.target.files?.[0])} />
+      {err ? <div style={{ fontSize: 12, color: '#FF3B30' }}>{err}</div> : hint ? <div className="muted" style={{ fontSize: 12 }}>{hint}</div> : null}
     </div>
   )
 }

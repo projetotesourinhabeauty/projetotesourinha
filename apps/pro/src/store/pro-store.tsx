@@ -51,6 +51,8 @@ interface ProStore extends ProState {
   refresh: () => Promise<void>;
   signOut: () => void;
   updateProfile: (patch: Partial<ProProfile>) => void;
+  /** Troca a foto de perfil (URI local escolhida no seletor de imagens). */
+  setPhoto: (uri: string, mimeType?: string) => Promise<Result>;
   setStatus: (id: string, status: AppointmentStatus) => void;
   addAppointment: (a: NewAppointment) => Promise<Result>;
   offers: (serviceId: string) => OfferedService | undefined;
@@ -196,6 +198,22 @@ export function ProProvider({ children }: { children: ReactNode }) {
     sync(() => remote.updateProfile(proId.current!, patch));
   }, [sync]);
 
+  const setPhoto = useCallback(async (uri: string, mimeType?: string): Promise<Result> => {
+    // Demonstração: a foto fica só neste aparelho.
+    if (!isRemote || !proId.current || !uidRef.current) {
+      setState((s) => (s.profile ? { ...s, profile: { ...s.profile, avatarUrl: uri } } : s));
+      return { ok: true };
+    }
+    try {
+      const url = await remote.uploadPhoto(uidRef.current.uid, uri, mimeType);
+      await remote.updateProfile(proId.current, { avatarUrl: url });
+      setState((s) => (s.profile ? { ...s, profile: { ...s.profile, avatarUrl: url } } : s));
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : String(e) };
+    }
+  }, []);
+
   const setStatus = useCallback((id: string, status: AppointmentStatus) => {
     setState((s) => ({ ...s, appointments: s.appointments.map((a) => (a.id === id ? { ...a, status } : a)) }));
     sync(() => remote.setBookingStatus(id, status));
@@ -296,6 +314,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
       refresh,
       signOut,
       updateProfile,
+      setPhoto,
       setStatus,
       addAppointment,
       offers,
@@ -308,7 +327,7 @@ export function ProProvider({ children }: { children: ReactNode }) {
       freeSlots,
       isDayOff,
     }),
-    [state, ready, syncError, signInDemo, signUp, signInWithEmail, signUpWithEmail, approve, refresh, signOut, updateProfile, setStatus, addAppointment, offers, toggleService, updateService, setWorkDay, setSlotMinutes, addTimeOff, removeTimeOff, freeSlots, isDayOff],
+    [state, ready, syncError, signInDemo, signUp, signInWithEmail, signUpWithEmail, approve, refresh, signOut, updateProfile, setPhoto, setStatus, addAppointment, offers, toggleService, updateService, setWorkDay, setSlotMinutes, addTimeOff, removeTimeOff, freeSlots, isDayOff],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

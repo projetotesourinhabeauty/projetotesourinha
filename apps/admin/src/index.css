@@ -211,3 +211,7 @@ select.inline { border: 1px solid var(--border); background: var(--surface); bor
 
 .fields-2 > * { min-width: 0; }
 .field input, .field select, .field textarea { width: 100%; }
+
+.spin { animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.cover-preview { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; background: #f2f2f4; display: block; }

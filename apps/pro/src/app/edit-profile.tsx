@@ -1,6 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, View } from 'react-native';
 
 import { BottomBar, Screen, ScreenHeader, Sheet } from '@/components/screen';
 import { Avatar, Button, Chip, Field, Text } from '@/components/ui';
@@ -11,7 +13,9 @@ import { usePro } from '@/store/pro-store';
 import { colors, spacing } from '@/theme';
 
 export default function EditProfile() {
-  const { profile, updateProfile } = usePro();
+  const { profile, updateProfile, setPhoto } = usePro();
+  const [uploading, setUploading] = useState(false);
+  const [photoMsg, setPhotoMsg] = useState('');
   const [name, setName] = useState(profile?.name ?? '');
   const [role, setRole] = useState(profile?.role ?? '');
   const [phone, setPhone] = useState(profile?.phone ?? '');
@@ -20,6 +24,28 @@ export default function EditProfile() {
   const [bio, setBio] = useState(profile?.bio ?? '');
   const [cats, setCats] = useState<CategoryId[]>(profile?.categoryIds ?? []);
   if (!profile) return null;
+
+  const pickPhoto = async () => {
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+    if (res.canceled || !res.assets[0]) return;
+    const asset = res.assets[0];
+    setUploading(true);
+    setPhotoMsg('');
+    const r = await setPhoto(asset.uri, asset.mimeType ?? 'image/jpeg');
+    setUploading(false);
+    if (r.ok) {
+      haptic.success();
+      setPhotoMsg('Foto atualizada!');
+    } else {
+      haptic.warning();
+      setPhotoMsg(`Não foi possível enviar a foto: ${r.error}`);
+    }
+  };
 
   const valid = name.trim().length >= 2 && role.trim().length >= 3 && cats.length > 0;
 
@@ -43,8 +69,15 @@ export default function EditProfile() {
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <Sheet contentStyle={{ gap: spacing.lg, paddingBottom: 200 }}>
           <View style={{ alignItems: 'center', marginBottom: spacing.sm }}>
-            <Avatar name={name || profile.name} color={profile.avatarColor} size={88} ring />
-            <Text variant="footnote" color={colors.textSecondary} style={{ marginTop: spacing.sm }}>Foto de perfil: em breve pelo app</Text>
+            <Pressable onPress={pickPhoto} disabled={uploading} accessibilityRole="button" accessibilityLabel="Trocar foto de perfil">
+              <Avatar name={name || profile.name} color={profile.avatarColor} uri={profile.avatarUrl} size={88} ring />
+              <View style={{ position: 'absolute', right: -2, bottom: -2, width: 32, height: 32, borderRadius: 16, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: colors.white }}>
+                {uploading ? <ActivityIndicator size="small" color={colors.white} /> : <Ionicons name="camera" size={15} color={colors.white} />}
+              </View>
+            </Pressable>
+            <Text variant="footnote" color={photoMsg.startsWith('Não') ? colors.danger : colors.textSecondary} align="center" style={{ marginTop: spacing.sm }}>
+              {uploading ? 'Enviando foto…' : photoMsg || 'Toque na foto para trocar. Clientes veem essa foto no app.'}
+            </Text>
           </View>
           <Field label="Nome" icon="person-outline" value={name} onChangeText={setName} />
           <Field label="Especialidade" icon="cut-outline" value={role} onChangeText={setRole} />

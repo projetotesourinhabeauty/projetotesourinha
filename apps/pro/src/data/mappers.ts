@@ -94,6 +94,7 @@ export const toCourse = (r: Row, taken = 0): Course => ({
   description: r.description ?? '',
   modules: r.modules ?? [],
   certificate: !!r.certificate,
+  coverUrl: r.cover_url ?? undefined,
 });
 
 export const toJob = (r: Row): Job => ({

@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { courses as seedCourses, jobs as seedJobs, professionals as seedPros, services as seedServices } from '@shared/catalog'
 import type { BookingStatus, Course, Job, Professional, Service } from '@shared/types'
 
-import { adminSignIn, loadAll, patchItem, saveItem } from './remote'
+import { adminSignIn, loadAll, patchItem, saveItem, uploadImage } from './remote'
 import { isRemote, supabase } from './supabase'
 
 /* ------------------------------------------------------------------ */
@@ -179,6 +179,8 @@ interface Store {
   loading: boolean
   /** Último erro ao gravar/carregar no banco. */
   error: string | null
+  /** Envia uma foto e devolve a URL (no modo demonstração, guarda a imagem no navegador). */
+  upload: (file: File, prefix: string) => Promise<string>
 }
 
 const Ctx = createContext<Store | null>(null)
@@ -320,9 +322,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const upload = useCallback(async (file: File, prefix: string) => {
+    if (file.size > 5 * 1024 * 1024) throw new Error('A imagem passa de 5 MB. Escolha uma menor.')
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error('Use uma imagem JPG, PNG ou WebP.')
+    if (isRemote) return uploadImage(file, prefix)
+    return await new Promise<string>((resolve, reject) => {
+      const fr = new FileReader()
+      fr.onload = () => resolve(String(fr.result))
+      fr.onerror = () => reject(new Error('Não foi possível ler a imagem.'))
+      fr.readAsDataURL(file)
+    })
+  }, [])
+
   const value = useMemo(
-    () => ({ db, upsert, patch, remove, reset, session, login, signIn, logout, remote: isRemote, loading, error }),
-    [db, upsert, patch, remove, reset, session, login, signIn, logout, loading, error],
+    () => ({ db, upsert, patch, remove, reset, session, login, signIn, logout, remote: isRemote, loading, error, upload }),
+    [db, upsert, patch, remove, reset, session, login, signIn, logout, loading, error, upload],
   )
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }

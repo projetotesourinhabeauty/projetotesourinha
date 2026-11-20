@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
@@ -48,8 +49,12 @@ export function CourseRow({ course }: { course: Course }) {
     <PressableScale
       onPress={() => router.push({ pathname: '/courses/[id]', params: { id: course.id } })}
       style={{ flexDirection: 'row', gap: spacing.md, backgroundColor: colors.surface, padding: spacing.md, borderRadius: radius.xl, alignItems: 'center', ...shadow.card }}>
-      <View style={{ width: 76, height: 76, borderRadius: radius.lg, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center' }}>
-        <Ionicons name={course.icon} size={32} color={colors.brand} />
+      <View style={{ width: 76, height: 76, borderRadius: radius.lg, backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        {course.coverUrl ? (
+          <Image source={{ uri: course.coverUrl }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} />
+        ) : (
+          <Ionicons name={course.icon} size={32} color={colors.brand} />
+        )}
       </View>
       <View style={{ flex: 1, gap: 3 }}>
         <Text variant="headline" numberOfLines={1}>{course.title}</Text>
@@ -108,7 +113,7 @@ export function BookingCard({ booking, onCancel }: { booking: Booking; onCancel?
             {cancelled ? <Badge label="CANCELADO" tone="danger" /> : booking.status === 'concluido' ? <Badge label="CONCLUÍDO" tone="neutral" /> : <Badge label="CONFIRMADO" tone="success" icon="checkmark" />}
           </View>
         </View>
-        <Avatar name={pro.name} color={pro.avatarColor} size={40} />
+        <Avatar name={pro.name} color={pro.avatarColor} uri={pro.imageUrl} size={40} />
       </View>
       {booking.status === 'confirmado' && onCancel && (
         <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: colors.separator }}>

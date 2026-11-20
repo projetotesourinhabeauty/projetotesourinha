@@ -54,6 +54,8 @@ export interface ProProfile {
   tesourinhaAlumni: boolean;
   categoryIds: CategoryId[];
   avatarColor: string;
+  /** URL pública da foto de perfil (Supabase Storage). */
+  avatarUrl?: string;
 }
 
 /** Cadastro novo passa por análise da Associação (feita no painel admin). */

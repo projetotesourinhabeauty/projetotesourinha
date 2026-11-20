@@ -1,7 +1,7 @@
 import { Award, Pencil, Plus, Star } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
-import { Avatar, Badge, Drawer, Field, PageHeader, SearchInput, Switch, useToast } from '../components/ui'
+import { Avatar, Badge, Drawer, Field, ImageUpload, PageHeader, SearchInput, Switch, useToast } from '../components/ui'
 import { useStore, type AdminProfessional } from '../data/store'
 import { categories } from '@shared/catalog'
 import type { CategoryId } from '@shared/types'
@@ -26,7 +26,7 @@ const blank = (): AdminProfessional => ({
 })
 
 export default function Professionals() {
-  const { db, upsert, patch } = useStore()
+  const { db, upsert, patch, upload } = useStore()
   const toast = useToast()
   const [q, setQ] = useState('')
   const [edit, setEdit] = useState<AdminProfessional | null>(null)
@@ -71,7 +71,7 @@ export default function Professionals() {
                 <tr key={p.id} style={{ opacity: p.active ? 1 : 0.55 }}>
                   <td>
                     <div className="cell-main">
-                      <Avatar name={p.name} color={p.avatarColor} />
+                      <Avatar name={p.name} color={p.avatarColor} src={p.imageUrl} />
                       <div>
                         <div className="t" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                           {p.name} {p.tesourinhaAlumni && <Award size={14} color="#FF6A13" />}
@@ -115,8 +115,13 @@ export default function Professionals() {
         {edit && (
           <>
             <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-              <Avatar name={edit.name || 'Novo'} color={edit.avatarColor} size="lg" />
-              <div className="muted" style={{ fontSize: 13 }}>Foto de perfil e portfólio serão enviados pelo Supabase Storage.</div>
+              <Avatar name={edit.name || 'Novo'} color={edit.avatarColor} size="lg" src={edit.imageUrl} />
+              <ImageUpload
+                value={edit.imageUrl}
+                onChange={(url) => setEdit((e) => (e ? { ...e, imageUrl: url } : e))}
+                upload={(f) => upload(f, 'profissional')}
+                hint="JPG, PNG ou WebP até 5 MB. Prefira foto quadrada, de rosto. O profissional também pode trocar pelo app Pro."
+              />
             </div>
             <Field label="Nome"><input value={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} /></Field>
             <div className="fields-2">

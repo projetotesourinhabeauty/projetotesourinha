@@ -91,6 +91,7 @@ export async function loadAll(): Promise<DB> {
     description: c.description ?? '',
     modules: c.modules ?? [],
     certificate: !!c.certificate,
+    coverUrl: c.cover_url ?? undefined,
     published: !!c.published,
   }))
 
@@ -150,6 +151,7 @@ function toRow(c: keyof DB, item: any): Row | null {
         name: item.name, role: item.role, bio: item.bio, neighborhood: item.neighborhood,
         years_experience: item.yearsExperience, tesourinha_alumni: item.tesourinhaAlumni,
         category_ids: item.categoryIds as CategoryId[], active: item.active,
+        avatar_url: item.imageUrl ?? null,
       }
     case 'services':
       return {
@@ -161,7 +163,7 @@ function toRow(c: keyof DB, item: any): Row | null {
         title: item.title, subtitle: item.subtitle, area: item.categoryId, level: item.level,
         duration_hours: item.durationHours, modality: item.modality, start_date: item.startDate || null,
         seats: item.seats, description: item.description, modules: item.modules, certificate: item.certificate,
-        icon: item.icon, published: item.published,
+        icon: item.icon, published: item.published, cover_url: item.coverUrl ?? null,
       }
     case 'jobs':
       return {
@@ -236,4 +238,14 @@ export async function adminSignIn(email: string, password: string): Promise<stri
     return 'Esta conta não tem acesso de administrador.'
   }
   return null
+}
+
+/** Envia uma imagem para o bucket "fotos" (pasta admin/) e devolve a URL pública. */
+export async function uploadImage(file: File, prefix: string): Promise<string> {
+  const sb = supabase!
+  const ext = file.type.includes('png') ? 'png' : file.type.includes('webp') ? 'webp' : 'jpg'
+  const path = `admin/${prefix}-${Date.now()}.${ext}`
+  const { error } = await sb.storage.from('fotos').upload(path, file, { contentType: file.type || 'image/jpeg', upsert: false })
+  if (error) throw new Error(error.message)
+  return sb.storage.from('fotos').getPublicUrl(path).data.publicUrl
 }

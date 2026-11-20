@@ -44,7 +44,7 @@ export default function BookingSuccess() {
           {booking && pro && service && (
             <Card style={{ alignSelf: 'stretch', marginTop: spacing.xl, gap: spacing.md }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-                <Avatar name={pro.name} color={pro.avatarColor} size={48} />
+                <Avatar name={pro.name} color={pro.avatarColor} uri={pro.imageUrl} size={48} />
                 <View style={{ flex: 1 }}>
                   <Text variant="headline">{service.name}</Text>
                   <Text variant="footnote" color={colors.textSecondary}>com {pro.name}</Text>

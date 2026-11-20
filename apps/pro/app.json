@@ -35,6 +35,13 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 140
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "O Tesourinha Pro usa suas fotos para você escolher a foto do seu perfil.",
+          "cameraPermission": "O Tesourinha Pro usa a câmera para você tirar a foto do seu perfil."
+        }
       ]
     ],
     "experiments": {

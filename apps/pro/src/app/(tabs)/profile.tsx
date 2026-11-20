@@ -30,7 +30,7 @@ export default function Profile() {
 
         <View style={{ marginTop: -spacing.huge, paddingHorizontal: spacing.xl, gap: spacing.xxl }}>
           <PressableScale onPress={() => router.push('/edit-profile')} scaleTo={0.98} style={{ backgroundColor: colors.surface, borderRadius: radius.xl, padding: spacing.lg, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
-            <Avatar name={profile.name} color={profile.avatarColor} size={60} />
+            <Avatar name={profile.name} color={profile.avatarColor} uri={profile.avatarUrl} size={60} />
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text variant="title3" weight="700" numberOfLines={1} style={{ flexShrink: 1 }}>{profile.name}</Text>
