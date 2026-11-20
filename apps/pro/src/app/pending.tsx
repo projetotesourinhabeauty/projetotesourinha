@@ -13,7 +13,7 @@ import { colors, radius, spacing } from '@/theme';
 
 export default function Pending() {
   const insets = useSafeAreaInsets();
-  const { profile, approval, approve, signOut } = usePro();
+  const { profile, approval, approve, signOut, remote } = usePro();
   if (!profile) return <Redirect href="/welcome" />;
   if (approval === 'aprovado') return <Redirect href="/(tabs)" />;
 
@@ -65,12 +65,13 @@ export default function Pending() {
 
         <View style={{ gap: spacing.md }}>
           <Button
-            title="Simular aprovação (demo)"
+            title={remote ? 'Verificar aprovação' : 'Simular aprovação (demo)'}
             icon="checkmark-circle"
             onPress={() => {
               approve();
               haptic.success();
-              router.replace('/(tabs)');
+              // No modo remoto, a tela redireciona sozinha quando o status voltar "aprovado".
+              if (!remote) router.replace('/(tabs)');
             }}
           />
           <Button

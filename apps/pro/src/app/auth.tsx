@@ -18,7 +18,7 @@ const AVATAR_COLORS = ['#FF8A3D', '#E5560A', '#3A3A3C', '#1C1C1E', '#C2410C'];
 export default function Auth() {
   const params = useLocalSearchParams<{ mode?: string }>();
   const [mode, setMode] = useState<'login' | 'signup'>(params.mode === 'login' ? 'login' : 'signup');
-  const { signInDemo, signUp } = usePro();
+  const { signInDemo, signUp, signInWithEmail, signUpWithEmail, remote } = usePro();
   const insets = useSafeAreaInsets();
 
   const [name, setName] = useState('');
@@ -51,21 +51,35 @@ export default function Auth() {
     }
     setError('');
     setLoading(true);
-    // MVP: autenticação local. Substituir por supabase.auth.signUp / signInWithPassword.
+    const profile = {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      phone,
+      role: role.trim(),
+      bio: '',
+      neighborhood: neighborhood.trim() || 'São Paulo, SP',
+      yearsExperience: Number(years.replace(/\D/g, '')) || 0,
+      tesourinhaAlumni: alumni,
+      categoryIds: cats,
+      avatarColor: AVATAR_COLORS[name.length % AVATAR_COLORS.length]!,
+    };
+
+    if (remote) {
+      void (async () => {
+        const res = isSignup ? await signUpWithEmail(profile, password) : await signInWithEmail(email, password);
+        setLoading(false);
+        if (!res.ok) return fail(res.error);
+        haptic.success();
+        router.dismissAll();
+        router.replace('/');
+      })();
+      return;
+    }
+
+    // Modo demonstração: autenticação local, sem servidor.
     setTimeout(() => {
       if (isSignup) {
-        signUp({
-          name: name.trim(),
-          email: email.trim().toLowerCase(),
-          phone,
-          role: role.trim(),
-          bio: '',
-          neighborhood: neighborhood.trim() || 'São Paulo, SP',
-          yearsExperience: Number(years.replace(/\D/g, '')) || 0,
-          tesourinhaAlumni: alumni,
-          categoryIds: cats,
-          avatarColor: AVATAR_COLORS[name.length % AVATAR_COLORS.length]!,
-        });
+        signUp(profile);
         haptic.success();
         router.dismissAll();
         router.replace('/pending');

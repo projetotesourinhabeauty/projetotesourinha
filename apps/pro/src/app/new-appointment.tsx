@@ -25,11 +25,12 @@ export default function NewAppointment() {
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const offer = services.find((s) => s.serviceId === serviceId);
   const slots = offer ? freeSlots(date, offer.durationMin) : [];
 
-  const save = () => {
+  const save = async () => {
     if (!offer) return;
     if (name.trim().length < 2) {
       haptic.warning();
@@ -39,7 +40,8 @@ export default function NewAppointment() {
       haptic.warning();
       return setError('Escolha um horário livre.');
     }
-    addAppointment({
+    setSaving(true);
+    const res = await addAppointment({
       clientName: name.trim(),
       clientPhone: phone.trim(),
       serviceId: offer.serviceId,
@@ -49,6 +51,12 @@ export default function NewAppointment() {
       price: offer.price,
       notes: notes.trim() || undefined,
     });
+    setSaving(false);
+    if (!res.ok) {
+      haptic.warning();
+      setTime('');
+      return setError(res.error);
+    }
     haptic.success();
     router.back();
   };
@@ -132,7 +140,7 @@ export default function NewAppointment() {
           </View>
         )}
 
-        <Button title={time ? `Marcar às ${time}` : 'Marcar horário'} icon="checkmark" onPress={save} />
+        <Button title={time ? `Marcar às ${time}` : 'Marcar horário'} icon="checkmark" loading={saving} onPress={save} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
