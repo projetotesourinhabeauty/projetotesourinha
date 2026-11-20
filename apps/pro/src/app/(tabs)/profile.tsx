@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Logo } from '@/components/logo';
 import { Avatar, Badge, ListGroup, ListRow, PressableScale, Text } from '@/components/ui';
 import { association } from '@/data/catalog';
+import { deleteMyAccount, openPrivacy, openTerms } from '@/lib/account';
 import { confirm, notify } from '@/lib/confirm';
 import { WEEKDAY_ABBR } from '@/pro/time';
 import { usePro } from '@/store/pro-store';
@@ -72,6 +73,8 @@ export default function Profile() {
           <ListGroup title="Conta">
             <ListRow icon="person-outline" title="Meus dados" onPress={() => router.push('/edit-profile')} />
             <ListRow icon="notifications-outline" title="Notificações" subtitle="Novo agendamento, cancelamento e lembretes" onPress={() => router.push('/notifications')} />
+            <ListRow icon="shield-checkmark-outline" title="Política de privacidade" onPress={openPrivacy} />
+            <ListRow icon="document-text-outline" title="Termos de uso" onPress={openTerms} />
             <ListRow icon="help-circle-outline" title="Ajuda" onPress={() => notify('Ajuda', `Fale com a ${association.name} pelo WhatsApp ou e-mail informados no app do cliente.`)} />
           </ListGroup>
 
@@ -87,6 +90,21 @@ export default function Profile() {
 
           <ListGroup>
             <ListRow icon="log-out-outline" title="Sair" destructive onPress={() => confirm('Sair da conta?', 'Você precisará entrar novamente para ver sua agenda.', 'Sair', () => { signOut(); router.replace('/welcome'); })} />
+            <ListRow
+              icon="trash-outline"
+              title="Excluir minha conta"
+              destructive
+              onPress={() =>
+                confirm('Excluir sua conta?', 'Seu login e seus dados pessoais serão apagados e seu perfil sai do app. Isso não pode ser desfeito.', 'Excluir conta', () => {
+                  void (async () => {
+                    const err = await deleteMyAccount();
+                    if (err) return notify('Não foi possível excluir', err);
+                    signOut();
+                    router.replace('/welcome');
+                  })();
+                })
+              }
+            />
           </ListGroup>
 
           <Text variant="caption" color={colors.textTertiary} align="center">Tesourinha Pro · versão 1.0 (MVP)</Text>

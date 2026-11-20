@@ -14,6 +14,7 @@ const shared = [
   'lib/confirm.ts',
   'lib/supabase.ts',
   'lib/notifications.ts',
+  'lib/account.ts',
   'data/catalog.ts',
   'data/types.ts',
   'data/mappers.ts',

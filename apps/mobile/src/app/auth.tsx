@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ScissorsMark } from '@/components/logo';
 import { Button, Field, Text } from '@/components/ui';
+import { openPrivacy, openTerms } from '@/lib/account';
 import { haptic } from '@/lib/haptics';
 import { useApp } from '@/store/app-store';
 import { colors, radius, spacing } from '@/theme';
@@ -148,7 +149,9 @@ export default function Auth() {
         </>)}
 
         <Text variant="caption" color={colors.textSecondary} align="center" style={{ marginTop: spacing.xxl }}>
-          Ao continuar você concorda com os Termos de Uso e a Política de Privacidade.
+          Ao continuar você concorda com os{' '}
+          <Text variant="caption" color={colors.brand} weight="600" onPress={openTerms}>Termos de Uso</Text> e a{' '}
+          <Text variant="caption" color={colors.brand} weight="600" onPress={openPrivacy}>Política de Privacidade</Text>.
         </Text>
       </ScrollView>
     </KeyboardAvoidingView>
