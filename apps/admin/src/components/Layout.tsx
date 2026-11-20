@@ -1,4 +1,4 @@
-import { Briefcase, CalendarDays, GraduationCap, LayoutDashboard, LogOut, Menu, Medal, Scissors, Sparkles, Users } from 'lucide-react'
+import { Briefcase, CalendarDays, GraduationCap, LayoutDashboard, LogOut, Menu, Medal, ShoppingBag, Scissors, Sparkles, Users } from 'lucide-react'
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
@@ -18,6 +18,7 @@ export default function Layout() {
     { to: '/profissionais', label: 'Profissionais', icon: Scissors },
     { to: '/servicos', label: 'Serviços', icon: Sparkles },
     { section: 'Associação' },
+    { to: '/loja', label: 'Loja', icon: ShoppingBag },
     { to: '/cursos', label: 'Cursos', icon: GraduationCap },
     { to: '/vagas', label: 'Vagas', icon: Briefcase, count: newApps },
     { section: 'Pessoas' },

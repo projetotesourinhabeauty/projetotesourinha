@@ -11,6 +11,7 @@ import Login from './pages/Login'
 import Points from './pages/Points'
 import Professionals from './pages/Professionals'
 import Services from './pages/Services'
+import StorePage from './pages/Store'
 import UsersPage from './pages/Users'
 
 // BASE_URL vem como "/admin/"; sem a barra final, "/admin" também casa com o basename
@@ -32,6 +33,7 @@ function Routed() {
         <Route path="vagas" element={<Jobs />} />
         <Route path="usuarios" element={<UsersPage />} />
         <Route path="pontos" element={<Points />} />
+        <Route path="loja" element={<StorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

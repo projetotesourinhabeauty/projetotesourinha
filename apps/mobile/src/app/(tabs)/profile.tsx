@@ -53,6 +53,7 @@ export default function Profile() {
             <ListRow icon="calendar-outline" title="Meus agendamentos" value={upcoming ? String(upcoming) : undefined} onPress={() => router.push('/(tabs)/bookings')} />
             <ListRow icon="heart-outline" title="Meus favoritos" value={favorites.length ? String(favorites.length) : undefined} onPress={() => router.push('/(tabs)/favorites')} />
             <ListRow icon="sparkles" title="Tesourinhas" subtitle="Pontos, nível e cupons de desconto" onPress={() => router.push('/points')} />
+            <ListRow icon="bag-handle-outline" title="Pedidos da loja" onPress={() => router.push('/orders')} />
             <ListRow icon="person-outline" title="Meus dados" onPress={() => router.push('/account')} />
           </ListGroup>
 

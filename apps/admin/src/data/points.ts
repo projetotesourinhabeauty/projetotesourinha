@@ -31,6 +31,7 @@ const memory = {
     { key: 'curso_concluido', label: 'Curso concluído', points: 200, active: true },
     { key: 'indicacao', label: 'Amigo indicado fez o 1º atendimento', points: 100, active: true },
     { key: 'atendimento_pro', label: 'Atendimento concluído (profissional)', points: 20, active: true },
+    { key: 'compra_loja', label: 'Compra na loja entregue', points: 30, active: true },
   ] as Rule[],
   entries: [] as Entry[],
 }

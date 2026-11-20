@@ -21,7 +21,7 @@ const QUICK: { icon: IconName; title: string; href: string }[] = [
   { icon: 'add-circle-outline', title: 'Novo encaixe', href: '/new-appointment' },
   { icon: 'moon-outline', title: 'Folgas e horários', href: '/hours' },
   { icon: 'cut-outline', title: 'Meus serviços', href: '/(tabs)/services' },
-  { icon: 'eye-outline', title: 'Meu perfil público', href: '/preview' },
+  { icon: 'bag-handle-outline', title: 'Loja Pro', href: '/shop' },
 ];
 
 export default function Today() {

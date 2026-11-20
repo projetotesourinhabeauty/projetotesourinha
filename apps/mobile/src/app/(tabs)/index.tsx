@@ -98,6 +98,16 @@ export default function Home() {
             ))}
           </View>
 
+          {/* Loja */}
+          <PressableScale onPress={() => router.push('/shop')} scaleTo={0.98} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.lg, borderRadius: radius.xl, backgroundColor: colors.black }}>
+            <IconTile icon="bag-handle" size={44} tone="brand" />
+            <View style={{ flex: 1 }}>
+              <Text variant="headline" color={colors.white}>Loja Tesourinha</Text>
+              <Text variant="footnote" color="rgba(255,255,255,0.7)">Produtos de beleza · use seus cupons de pontos</Text>
+            </View>
+            <Icon name="chevron-forward" size={14} weight="semibold" color="rgba(255,255,255,0.6)" />
+          </PressableScale>
+
           {/* Próximo agendamento */}
           {next && (
             <View>

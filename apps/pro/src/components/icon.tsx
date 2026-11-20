@@ -79,6 +79,8 @@ import {
   BookOpen,
   Trophy,
   Keyboard,
+  ShoppingBag,
+  ShoppingCart,
   type LucideIcon,
 } from 'lucide-react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
@@ -215,6 +217,9 @@ const MAP = {
   'book-outline': def('book', BookOpen),
   trophy: def('trophy.fill', Trophy),
   'keypad-outline': def('keyboard', Keyboard),
+  'bag-handle-outline': def('bag', ShoppingBag),
+  'cart-outline': def('cart', ShoppingCart),
+  'bag-handle': def('bag.fill', ShoppingBag, true),
 } satisfies Record<Exclude<IconName, (typeof BRANDS)[number]>, Def>;
 
 

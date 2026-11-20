@@ -71,6 +71,8 @@ export default function Profile() {
           </ListGroup>
 
           <ListGroup title="Conta">
+            <ListRow icon="bag-handle-outline" title="Loja com preço Pro" subtitle="Produtos para o salão com desconto" onPress={() => router.push('/shop')} />
+            <ListRow icon="document-text-outline" title="Meus pedidos" onPress={() => router.push('/orders')} />
             <ListRow icon="sparkles" title="Tesourinhas" subtitle="Pontos, nível e cupons de desconto" onPress={() => router.push('/points')} />
             <ListRow icon="person-outline" title="Meus dados" onPress={() => router.push('/edit-profile')} />
             <ListRow icon="notifications-outline" title="Notificações" subtitle="Novo agendamento, cancelamento e lembretes" onPress={() => router.push('/notifications')} />
