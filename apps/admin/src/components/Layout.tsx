@@ -6,7 +6,7 @@ import { today, useStore } from '../data/store'
 import { Brand, ScissorsMark } from './ui'
 
 export default function Layout() {
-  const { db, session, logout } = useStore()
+  const { db, session, logout, error } = useStore()
   const [open, setOpen] = useState(false)
   const todayCount = db.bookings.filter((b) => b.date === today() && b.status === 'confirmado').length
   const newApps = db.applications.filter((a) => a.status === 'nova').length
@@ -66,6 +66,11 @@ export default function Layout() {
         </div>
       </aside>
       <main className="main">
+        {error && (
+          <div className="badge b-red plain" style={{ display: 'block', padding: '10px 14px', borderRadius: 12, marginBottom: 16 }}>
+            Não foi possível salvar no banco: {error}
+          </div>
+        )}
         <Outlet />
       </main>
     </div>

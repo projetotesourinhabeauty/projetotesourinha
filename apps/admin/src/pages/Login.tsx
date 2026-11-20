@@ -5,19 +5,23 @@ import { Field, ScissorsMark } from '../components/ui'
 import { useStore } from '../data/store'
 
 export default function Login() {
-  const { login } = useStore()
-  const [email, setEmail] = useState('admin@tesourinha.org.br')
+  const { signIn, remote } = useStore()
+  const [email, setEmail] = useState(remote ? '' : 'admin@tesourinha.org.br')
+  const [busy, setBusy] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
-    // MVP: login local. Em produção: Supabase Auth + papel "admin" na tabela profiles.
-    if (!email.includes('@') || password.length < 4) {
+    if (!email.includes('@') || password.length < (remote ? 6 : 4)) {
       setError('Informe um e-mail válido e a senha.')
       return
     }
-    login(email)
+    // Com Supabase: login real e só entra quem tem papel "admin". Sem Supabase: demonstração.
+    setBusy(true)
+    const err = await signIn(email, password)
+    setBusy(false)
+    if (err) setError(err)
   }
 
   return (
@@ -48,10 +52,12 @@ export default function Login() {
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" placeholder="••••••••" autoFocus />
           </Field>
           {error && <div className="badge b-red plain" style={{ padding: '8px 12px', borderRadius: 10 }}>{error}</div>}
-          <button className="btn primary" style={{ height: 46, borderRadius: 14, fontSize: 15 }}>
-            Entrar <ArrowRight size={16} />
+          <button className="btn primary" disabled={busy} style={{ height: 46, borderRadius: 14, fontSize: 15 }}>
+            {busy ? 'Entrando…' : 'Entrar'} <ArrowRight size={16} />
           </button>
-          <p className="muted" style={{ fontSize: 12.5, textAlign: 'center', margin: 0 }}>Versão de demonstração: qualquer senha com 4+ caracteres.</p>
+          <p className="muted" style={{ fontSize: 12.5, textAlign: 'center', margin: 0 }}>
+            {remote ? 'Use a mesma conta do app. O acesso é liberado para administradores.' : 'Versão de demonstração: qualquer senha com 4+ caracteres.'}
+          </p>
         </form>
       </div>
     </div>

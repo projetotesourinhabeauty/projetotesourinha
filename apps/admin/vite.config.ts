@@ -6,6 +6,8 @@ import { defineConfig } from 'vite'
 // VITE_BASE define o caminho onde o painel é publicado (ex.: /admin/ quando fica junto dos outros apps).
 export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
+  // EXPO_PUBLIC_* também: o painel usa as mesmas variáveis do Supabase que o app.
+  envPrefix: ['VITE_', 'EXPO_PUBLIC_'],
   plugins: [react()],
   resolve: {
     alias: {

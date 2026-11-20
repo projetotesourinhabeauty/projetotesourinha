@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { Avatar, Badge, PageHeader, SearchInput, Segmented, type Tone } from '../components/ui'
 import { fmtDate, useStore, type AdminUser } from '../data/store'
 
-const ROLE_TONE: Record<AdminUser['role'], Tone> = { cliente: 'blue', aluno: 'orange', profissional: 'green' }
+const ROLE_TONE: Record<AdminUser['role'], Tone> = { cliente: 'blue', aluno: 'orange', profissional: 'green', admin: 'gray' }
 
 export default function UsersPage() {
   const { db } = useStore()

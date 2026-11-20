@@ -17,7 +17,8 @@ import UsersPage from './pages/Users'
 const BASENAME = import.meta.env.BASE_URL.replace(/\/+$/, '') || '/'
 
 function Routed() {
-  const { session } = useStore()
+  const { session, loading } = useStore()
+  if (loading) return <div style={{ display: 'grid', placeItems: 'center', height: '100vh', color: '#8E8E93' }}>Carregando dados…</div>
   if (!session) return <Login />
   return (
     <Routes>
