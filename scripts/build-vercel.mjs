@@ -23,15 +23,17 @@ function install(cwd) {
 rmSync(out, { recursive: true, force: true })
 mkdirSync(out, { recursive: true })
 
-// 0) Landing page, na raiz do site
+// 0) Landing page, na raiz do site.
+// A landing importa arquivos de apps/mobile/src, e o Vite lê o tsconfig do mobile (que estende "expo/tsconfig.base"),
+// então as dependências do mobile precisam estar instaladas antes de buildar a landing.
+const mobile = dir('apps/mobile')
+install(mobile)
 const landing = dir('apps/landing')
 install(landing)
 run('npm run build', landing)
 cpSync(`${landing}/dist`, out, { recursive: true })
 
 // 1) App do cliente, em /app
-const mobile = dir('apps/mobile')
-install(mobile)
 run('npx expo export --platform web', mobile, { EXPO_BASE_URL: '/app' })
 cpSync(`${mobile}/dist`, `${out}/app`, { recursive: true })
 
