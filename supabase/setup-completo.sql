@@ -687,3 +687,21 @@ insert into public.jobs (id, slug, title, company, location, job_type, salary, d
   ('6a241ef1-5d34-5ace-a751-1f02cbf0e024', 'j-esteticista', 'Esteticista', 'Spa e Bem-estar Aura', 'Vila Mariana - SP', 'Meio período', null, 'Atendimento facial e corporal em spa urbano.', array['Formação em estética', 'Experiência com protocolos faciais']::text[], array['Horário flexível', 'Desconto em tratamentos']::text[], 'sparkles-outline', true, '2026-11-03'),
   ('9670f83c-d287-5ebe-a3a4-d8819781c033', 'j-recepcionista', 'Recepcionista', 'Salão de Beleza Glow', 'Santo Amaro - SP', 'Tempo integral', 'R$ 1.800', 'Recepção, agenda de clientes e atendimento via WhatsApp.', array['Ensino médio completo', 'Boa organização']::text[], array['Vale-transporte', 'Vale-refeição']::text[], 'call-outline', true, '2026-11-01')
 on conflict (id) do nothing;
+
+
+-- ======== 0005_seguranca.sql ========
+-- Tesourinha Beauty · ajustes apontados pelo Security Advisor do Supabase
+
+-- Funções de gatilho não devem ser chamadas pela API (/rest/v1/rpc/...).
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+revoke execute on function public.on_professional_approved() from public, anon, authenticated;
+revoke execute on function public.refresh_professional_rating() from public, anon, authenticated;
+
+-- search_path fixo nas funções de proteção (evita sequestro de search_path).
+alter function public.protect_profile_role() set search_path = public;
+alter function public.protect_professional_fields() set search_path = public;
+
+-- Observação: is_admin() e my_professional_id() continuam executáveis por anon/authenticated
+-- porque são usadas nas políticas de RLS. As views professional_busy_slots, professional_days_off
+-- e course_enrollment_counts são "security definer" de propósito: expõem só dados agregados/mínimos
+-- (horário ocupado, dia de folga, nº de inscritos) de tabelas que são privadas.
