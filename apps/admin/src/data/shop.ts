@@ -12,6 +12,7 @@ export interface AdminProduct {
   imageUrl?: string
   active: boolean
   sortOrder: number
+  featured: boolean
 }
 
 export interface StoreSettings {
@@ -21,6 +22,10 @@ export interface StoreSettings {
   deliveryEnabled: boolean
   deliveryFee: number
   onlinePayment: boolean
+  gridColumns: 1 | 2
+  bannerTitle: string
+  bannerSubtitle: string
+  bannerImageUrl?: string
 }
 
 export type OrderStatus = 'novo' | 'pago' | 'separando' | 'pronto' | 'enviado' | 'entregue' | 'cancelado'
@@ -50,10 +55,10 @@ const fail = (e: { message: string } | null) => {
 }
 
 const memory = {
-  settings: { open: true, proDiscountPct: 15, pickupAddress: 'Retirada na Associação Tesourinha', deliveryEnabled: false, deliveryFee: 0, onlinePayment: false } as StoreSettings,
+  settings: { open: true, proDiscountPct: 15, pickupAddress: 'Retirada na Associação Tesourinha', deliveryEnabled: false, deliveryFee: 0, onlinePayment: false, gridColumns: 2, bannerTitle: 'Produtos profissionais para sua beleza', bannerSubtitle: 'Use seus cupons de pontos. Profissional aprovado compra com desconto.' } as StoreSettings,
   products: [
-    { id: 'd1', name: 'Tesoura profissional 6"', description: 'Aço inox, fio navalha.', category: 'Ferramentas', price: 189.9, proPrice: 149.9, stock: 8, active: true, sortOrder: 0 },
-    { id: 'd2', name: 'Máscara de hidratação 1 kg', description: 'Tratamento profundo.', category: 'Cabelo', price: 79.9, proPrice: null, stock: 15, active: true, sortOrder: 0 },
+    { id: 'd1', name: 'Tesoura profissional 6"', description: 'Aço inox, fio navalha.', category: 'Ferramentas', price: 189.9, proPrice: 149.9, stock: 8, active: true, sortOrder: 0, featured: false },
+    { id: 'd2', name: 'Máscara de hidratação 1 kg', description: 'Tratamento profundo.', category: 'Cabelo', price: 79.9, proPrice: null, stock: 15, active: true, sortOrder: 0, featured: false },
   ] as AdminProduct[],
   orders: [] as AdminOrder[],
 }
@@ -69,6 +74,10 @@ export async function getSettings(): Promise<StoreSettings> {
     deliveryEnabled: data.delivery_enabled,
     deliveryFee: Number(data.delivery_fee),
     onlinePayment: data.online_payment,
+    gridColumns: data.grid_columns === 1 ? 1 : 2,
+    bannerTitle: data.banner_title ?? '',
+    bannerSubtitle: data.banner_subtitle ?? '',
+    bannerImageUrl: data.banner_image_url ?? undefined,
   }
 }
 
@@ -85,6 +94,10 @@ export async function saveSettings(s: StoreSettings): Promise<void> {
         pickup_address: s.pickupAddress,
         delivery_enabled: s.deliveryEnabled,
         delivery_fee: s.deliveryFee,
+        grid_columns: s.gridColumns,
+        banner_title: s.bannerTitle.trim() || 'Loja Tesourinha',
+        banner_subtitle: s.bannerSubtitle.trim(),
+        banner_image_url: s.bannerImageUrl ?? null,
       }).eq('id', 1)
     ).error,
   )
@@ -105,6 +118,7 @@ export async function listProducts(): Promise<AdminProduct[]> {
     imageUrl: p.image_url ?? undefined,
     active: p.active,
     sortOrder: p.sort_order,
+    featured: !!p.featured,
   }))
 }
 
@@ -127,6 +141,7 @@ export async function saveProduct(p: AdminProduct): Promise<void> {
     image_url: p.imageUrl ?? null,
     active: p.active,
     sort_order: p.sortOrder,
+    featured: p.featured,
   }
   fail((p.id ? await sb().from('products').update(row).eq('id', p.id) : await sb().from('products').insert(row)).error)
 }

@@ -98,15 +98,15 @@ export default function Home() {
           </View>
 
           {/* Loja */}
-          <PressableScale onPress={() => router.push('/shop')} scaleTo={0.98} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.lg, minHeight: 96, borderRadius: radius.xl, backgroundColor: colors.black, overflow: 'hidden' }}>
-            <Image source={{ uri: heroPhotos.shop(900, 300) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={300} />
-            <LinearGradient colors={['rgba(11,11,12,0.9)', 'rgba(11,11,12,0.55)', 'rgba(11,11,12,0.15)']} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
-            <IconTile icon="bag-handle" size={44} tone="brand" />
-            <View style={{ flex: 1 }}>
-              <Text variant="headline" color={colors.white}>Loja Tesourinha</Text>
-              <Text variant="footnote" color="rgba(255,255,255,0.7)">Produtos de beleza · use seus cupons de pontos</Text>
+          <PressableScale onPress={() => router.push('/shop')} scaleTo={0.98} style={[styles.shopCard, shadow.floating]}>
+            <Image source={{ uri: heroPhotos.shop(1000, 640) }} style={StyleSheet.absoluteFill} contentFit="cover" transition={300} />
+            <LinearGradient colors={['rgba(11,11,12,0)', 'rgba(11,11,12,0.35)', 'rgba(11,11,12,0.9)']} locations={[0, 0.4, 1]} style={StyleSheet.absoluteFill} />
+            <View style={{ padding: spacing.xl, gap: 6 }}>
+              <View style={{ alignSelf: 'flex-start' }}><Badge label="LOJA TESOURINHA" /></View>
+              <Text variant="title2" color={colors.white}>Produtos profissionais de beleza</Text>
+              <Text variant="subhead" color="rgba(255,255,255,0.8)">Use seus cupons de pontos na compra</Text>
+              <Button title="Ver a loja" size="sm" full={false} iconRight="arrow-forward" onPress={() => router.push('/shop')} style={{ marginTop: spacing.sm }} />
             </View>
-            <Icon name="chevron-forward" size={14} weight="semibold" color="rgba(255,255,255,0.6)" />
           </PressableScale>
 
           {/* Próximo agendamento */}
@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   catCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.black, overflow: 'hidden', borderWidth: 2, borderColor: colors.white, ...shadow.card },
+  shopCard: { borderRadius: radius.xxl, overflow: 'hidden', minHeight: 240, justifyContent: 'flex-end', backgroundColor: colors.black },
   banner: { borderRadius: radius.xxl, overflow: 'hidden', minHeight: 190, justifyContent: 'center', backgroundColor: colors.black },
   quick: { flex: 1, alignItems: 'center', gap: 8, paddingVertical: spacing.lg, paddingHorizontal: 4, backgroundColor: colors.surface, borderRadius: radius.xl, ...shadow.card },
   proCard: { width: 150, padding: spacing.lg, backgroundColor: colors.surface, borderRadius: radius.xl, alignItems: 'flex-start', ...shadow.card },

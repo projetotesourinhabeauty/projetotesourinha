@@ -22,7 +22,7 @@ const NEXT: Partial<Record<OrderStatus, (o: AdminOrder) => OrderStatus>> = {
   pronto: () => 'entregue',
   enviado: () => 'entregue',
 }
-const blank = (): AdminProduct => ({ name: '', description: '', category: 'Cabelo', price: 0, proPrice: null, stock: 0, active: true, sortOrder: 0 })
+const blank = (): AdminProduct => ({ name: '', description: '', category: 'Cabelo', price: 0, proPrice: null, stock: 0, active: true, sortOrder: 0, featured: false })
 
 /** Loja Tesourinha: pedidos, produtos com preço Pro e configuração. */
 export default function StorePage() {
@@ -157,7 +157,7 @@ export default function StorePage() {
                         <span className="t" style={{ fontWeight: 600 }}>{p.name}</span>
                       </div>
                     </td>
-                    <td className="muted">{p.category}</td>
+                    <td className="muted">{p.category}{p.featured && <> <Badge tone="orange">Destaque</Badge></>}</td>
                     <td>{brl(p.price)}</td>
                     <td>{brl(proPriceOf(p))} {p.proPrice == null && <span className="muted" style={{ fontSize: 12 }}>(padrão)</span>}</td>
                     <td>{p.stock === 0 ? <Badge tone="red">Esgotado</Badge> : p.stock}</td>
@@ -175,6 +175,21 @@ export default function StorePage() {
       {tab === 'config' && settings && (
         <div className="card" style={{ padding: 22, display: 'grid', gap: 16, maxWidth: 560 }}>
           <div className="check-row">Loja aberta <Switch on={settings.open} onChange={(v) => setSettings({ ...settings, open: v })} /></div>
+          <Field label="Vitrine: produtos por linha no app">
+            <Segmented<'1' | '2'> value={String(settings.gridColumns) as '1' | '2'} onChange={(v) => setSettings({ ...settings, gridColumns: v === '1' ? 1 : 2 })} options={[{ value: '2', label: '2 por linha' }, { value: '1', label: '1 por linha (grande)' }]} />
+          </Field>
+          <Field label="Banner: título">
+            <input value={settings.bannerTitle} onChange={(e) => setSettings({ ...settings, bannerTitle: e.target.value })} />
+          </Field>
+          <Field label="Banner: texto">
+            <input value={settings.bannerSubtitle} onChange={(e) => setSettings({ ...settings, bannerSubtitle: e.target.value })} />
+          </Field>
+          <Field label="Banner: foto (opcional)">
+            <div style={{ display: 'grid', gap: 8 }}>
+              {settings.bannerImageUrl && <img src={settings.bannerImageUrl} alt="" className="cover-preview" />}
+              <ImageUpload value={settings.bannerImageUrl} onChange={(url) => setSettings({ ...settings, bannerImageUrl: url })} upload={(f) => upload(f, 'banner-loja')} label="Enviar foto do banner" hint="Sem foto, o app usa uma imagem padrão de produtos de beleza." />
+            </div>
+          </Field>
           <Field label="Desconto Pro padrão (%)">
             <input type="number" min={0} max={90} value={settings.proDiscountPct} onChange={(e) => setSettings({ ...settings, proDiscountPct: Math.min(90, Math.max(0, Number(e.target.value) || 0)) })} />
           </Field>
@@ -224,6 +239,7 @@ export default function StorePage() {
               </Field>
             </div>
             <div className="check-row">Visível na loja <Switch on={edit.active} onChange={(v) => setEdit({ ...edit, active: v })} /></div>
+            <div className="check-row">Destaque na vitrine <Switch on={edit.featured} onChange={(v) => setEdit({ ...edit, featured: v })} /></div>
           </>
         )}
       </Drawer>

@@ -15,6 +15,7 @@ export interface Product {
   proPrice: number;
   stock: number;
   imageUrl?: string;
+  featured: boolean;
 }
 
 export interface ShopSettings {
@@ -24,6 +25,10 @@ export interface ShopSettings {
   deliveryEnabled: boolean;
   deliveryFee: number;
   onlinePayment: boolean;
+  gridColumns: 1 | 2;
+  bannerTitle: string;
+  bannerSubtitle: string;
+  bannerImageUrl?: string;
 }
 
 export interface Shop {
@@ -83,6 +88,10 @@ export async function loadShop(): Promise<Shop> {
       deliveryEnabled: !!c.delivery_enabled,
       deliveryFee: Number(c.delivery_fee ?? 0),
       onlinePayment: !!c.online_payment,
+      gridColumns: c.grid_columns === 1 ? 1 : 2,
+      bannerTitle: c.banner_title ?? 'Produtos profissionais para sua beleza',
+      bannerSubtitle: c.banner_subtitle ?? '',
+      bannerImageUrl: c.banner_image_url ?? undefined,
     },
     products: (prods.data ?? []).map((p: Row) => ({
       id: p.id,
@@ -93,6 +102,7 @@ export async function loadShop(): Promise<Shop> {
       proPrice: p.pro_price != null ? Number(p.pro_price) : Math.round(Number(p.price) * (100 - pct)) / 100,
       stock: p.stock,
       imageUrl: p.image_url ?? undefined,
+      featured: !!p.featured,
     })),
     isPro: !!pro.data,
   };
@@ -193,12 +203,12 @@ export function useCart(): CartItem[] {
 /* ---------------------------- demonstração ---------------------------- */
 const demoIsPro = false;
 const demoOrders: Order[] = [];
-const demoSettings: ShopSettings = { open: true, proDiscountPct: 15, pickupAddress: 'Retirada na Associação Tesourinha', deliveryEnabled: false, deliveryFee: 0, onlinePayment: false };
+const demoSettings: ShopSettings = { open: true, proDiscountPct: 15, pickupAddress: 'Retirada na Associação Tesourinha', deliveryEnabled: false, deliveryFee: 0, onlinePayment: false, gridColumns: 2, bannerTitle: 'Produtos profissionais para sua beleza', bannerSubtitle: 'Use seus cupons de pontos. Profissional aprovado compra com desconto.' };
 const demoProducts: Product[] = [
-  { id: 'd1', name: 'Tesoura profissional 6"', description: 'Aço inox, fio navalha, ideal para corte a seco e molhado.', category: 'Ferramentas', price: 189.9, proPrice: 149.9, stock: 8 },
-  { id: 'd2', name: 'Kit pentes de carbono', description: '6 pentes antiestáticos resistentes ao calor.', category: 'Ferramentas', price: 49.9, proPrice: 42.4, stock: 20 },
-  { id: 'd3', name: 'Máscara de hidratação 1 kg', description: 'Tratamento profundo para uso no salão.', category: 'Cabelo', price: 79.9, proPrice: 67.9, stock: 15 },
-  { id: 'd4', name: 'Esmalte gel (cor única)', description: 'Alta duração, secagem em cabine UV/LED.', category: 'Unhas', price: 24.9, proPrice: 21.2, stock: 0 },
+  { id: 'd1', name: 'Tesoura profissional 6"', description: 'Aço inox, fio navalha, ideal para corte a seco e molhado.', category: 'Ferramentas', price: 189.9, proPrice: 149.9, stock: 8, featured: true },
+  { id: 'd2', name: 'Kit pentes de carbono', description: '6 pentes antiestáticos resistentes ao calor.', category: 'Ferramentas', price: 49.9, proPrice: 42.4, stock: 20, featured: false },
+  { id: 'd3', name: 'Máscara de hidratação 1 kg', description: 'Tratamento profundo para uso no salão.', category: 'Cabelo', price: 79.9, proPrice: 67.9, stock: 15, featured: false },
+  { id: 'd4', name: 'Esmalte gel (cor única)', description: 'Alta duração, secagem em cabine UV/LED.', category: 'Unhas', price: 24.9, proPrice: 21.2, stock: 0, featured: false },
 ];
 
 /** Cupons de pontos ainda válidos do usuário logado. */

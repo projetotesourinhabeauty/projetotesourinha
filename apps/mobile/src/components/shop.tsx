@@ -1,19 +1,20 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, RefreshControl, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Icon } from '@/components/icon';
-import { Screen, ScreenHeader, Sheet } from '@/components/screen';
-import { Badge, Button, Card, Chip, EmptyState, IconTile, ListGroup, ListRow, PressableScale, SectionHeader, Text } from '@/components/ui';
+import { BackButton, Screen, ScreenHeader, Sheet } from '@/components/screen';
+import { Badge, Button, Card, Chip, EmptyState, IconTile, ListGroup, ListRow, PressableScale, SearchBar, SectionHeader, Text } from '@/components/ui';
 import { heroPhotos, productPhoto } from '@/data/imagery';
 import { money } from '@/data/points';
 import { ORDER_STATUS, cancelOrder, cartStore, listOrders, loadShop, myCoupons, placeOrder, useCart, type Order, type Product, type Shop } from '@/data/shop';
 import { confirm, notify } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { isRemote } from '@/lib/supabase';
-import { colors, radius, spacing } from '@/theme';
+import { colors, radius, shadow, spacing } from '@/theme';
 
 function useShop() {
   const [shop, setShop] = useState<Shop | null>(null);
@@ -60,17 +61,22 @@ function CartButton() {
 export function ShopScreen() {
   const { shop, error, load } = useShop();
   const [cat, setCat] = useState('Todos');
+  const [query, setQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const cart = useCart();
   const cats = useMemo(() => ['Todos', ...new Set((shop?.products ?? []).map((p) => p.category))], [shop]);
-  const list = (shop?.products ?? []).filter((p) => cat === 'Todos' || p.category === cat);
+  const q = query.trim().toLowerCase();
+  const list = (shop?.products ?? []).filter((p) => (cat === 'Todos' || p.category === cat) && (!q || `${p.name} ${p.description} ${p.category}`.toLowerCase().includes(q)));
+  const featured = (shop?.products ?? []).filter((p) => p.featured);
   const pro = !!shop?.isPro;
+  const cols = shop?.settings.gridColumns ?? 2;
+  const count = cart.reduce((a, i) => a + i.qty, 0);
 
   return (
     <Screen>
       <ScreenHeader title="Loja Tesourinha" subtitle={pro ? 'Você compra com preço Pro' : 'Produtos para beleza e para o salão'} right={<CartButton />} />
       <Sheet
-        contentStyle={{ gap: spacing.xl, paddingBottom: 140 }}
+        contentStyle={{ gap: spacing.xl, paddingBottom: 150 }}
         refreshControl={<RefreshControl refreshing={refreshing} tintColor={colors.brand} onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false); }} />}>
         {!shop && !error ? (
           <ActivityIndicator color={colors.brand} style={{ marginTop: spacing.huge }} />
@@ -82,61 +88,202 @@ export function ShopScreen() {
           <EmptyState icon="bag-handle-outline" title="Em breve" text="Os produtos da Loja Tesourinha aparecem aqui assim que forem cadastrados." />
         ) : (
           <>
-            <View style={{ borderRadius: radius.xl, overflow: 'hidden', minHeight: 150, justifyContent: 'flex-end', backgroundColor: colors.black }}>
-              <Image source={{ uri: heroPhotos.shop(900, 420) }} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} contentFit="cover" transition={300} />
-              <LinearGradient colors={['transparent', 'rgba(11,11,12,0.88)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
-              <View style={{ padding: spacing.lg, gap: 4 }}>
-                {pro && <View style={{ alignSelf: 'flex-start' }}><Badge label="PREÇO PRO ATIVO" icon="ribbon" /></View>}
-                <Text variant="title3" weight="700" color={colors.white}>{pro ? 'Seu desconto de profissional já está aplicado' : 'Produtos profissionais para sua beleza'}</Text>
-                <Text variant="footnote" color="rgba(255,255,255,0.75)">
-                  {pro ? 'Profissionais aprovados pagam menos em todos os produtos.' : `Use seus cupons de pontos. Profissional aprovado compra com até ${shop.settings.proDiscountPct}% de desconto.`}
+            {/* Banner */}
+            <View style={{ borderRadius: radius.xxl, overflow: 'hidden', aspectRatio: 1.15, justifyContent: 'flex-end', backgroundColor: colors.black }}>
+              <Image source={{ uri: shop.settings.bannerImageUrl ?? heroPhotos.shop(1000, 870) }} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} contentFit="cover" transition={300} />
+              <LinearGradient colors={['rgba(11,11,12,0)', 'rgba(11,11,12,0.35)', 'rgba(11,11,12,0.92)']} locations={[0, 0.45, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+              <View style={{ padding: spacing.xl, gap: spacing.sm }}>
+                <View style={{ alignSelf: 'flex-start' }}><Badge label={pro ? 'PREÇO PRO ATIVO' : 'LOJA TESOURINHA'} icon={pro ? 'ribbon' : 'bag-handle'} /></View>
+                <Text variant="title1" color={colors.white}>{pro ? 'Seu desconto de profissional já está aplicado' : shop.settings.bannerTitle}</Text>
+                <Text variant="subhead" color="rgba(255,255,255,0.8)">
+                  {pro ? 'Profissionais aprovados pagam menos em todos os produtos.' : shop.settings.bannerSubtitle || `Profissional aprovado compra com até ${shop.settings.proDiscountPct}% de desconto.`}
                 </Text>
               </View>
             </View>
+
+            <SearchBar placeholder="Buscar produtos" value={query} onChangeText={setQuery} />
+
             {cats.length > 2 && (
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -spacing.xl }} contentContainerStyle={{ paddingHorizontal: spacing.xl, gap: spacing.sm }}>
                 {cats.map((c) => <Chip key={c} label={c} active={c === cat} onPress={() => setCat(c)} />)}
+              </ScrollView>
+            )}
+
+            {/* Destaques */}
+            {featured.length > 0 && cat === 'Todos' && !q && (
+              <View>
+                <SectionHeader title="Destaques" />
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -spacing.xl }} contentContainerStyle={{ paddingHorizontal: spacing.xl, gap: spacing.md }}>
+                  {featured.map((p) => (
+                    <View key={p.id} style={{ width: 220 }}>
+                      <ProductCard p={p} pro={pro} inCart={cart.find((i) => i.productId === p.id)?.qty ?? 0} />
+                    </View>
+                  ))}
+                </ScrollView>
               </View>
             )}
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md }}>
-              {list.map((p) => {
-                const inCart = cart.find((i) => i.productId === p.id)?.qty ?? 0;
-                const out = p.stock <= 0;
-                return (
-                  <View key={p.id} style={{ flexBasis: '47%', flexGrow: 1, backgroundColor: colors.surface, borderRadius: radius.lg, overflow: 'hidden' }}>
-                    <View style={{ aspectRatio: 1, backgroundColor: colors.surfaceMuted, alignItems: 'center', justifyContent: 'center' }}>
-                      {productPhoto(p) ? <Image source={{ uri: productPhoto(p) }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} /> : <IconTile icon="bag-handle" size={56} />}
-                      {out && <View style={{ position: 'absolute', top: 8, left: 8 }}><Badge label="ESGOTADO" tone="dark" /></View>}
+
+            <View>
+              <SectionHeader title={cat === 'Todos' ? (q ? 'Resultados' : 'Todos os produtos') : cat} />
+              {list.length === 0 ? (
+                <EmptyState icon="search-outline" title="Nada encontrado" text="Tente outra palavra ou outra categoria." />
+              ) : (
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md }}>
+                  {list.map((p) => (
+                    <View key={p.id} style={cols === 2 ? { flexBasis: '47%', flexGrow: 1, maxWidth: '50%' } : { width: '100%' }}>
+                      <ProductCard p={p} pro={pro} wide={cols === 1} inCart={cart.find((i) => i.productId === p.id)?.qty ?? 0} />
                     </View>
-                    <View style={{ padding: spacing.md, gap: 4, flex: 1 }}>
-                      <Text variant="subhead" weight="600" numberOfLines={2}>{p.name}</Text>
-                      {!!p.description && <Text variant="caption" color={colors.textSecondary} numberOfLines={2}>{p.description}</Text>}
-                      <View style={{ flex: 1 }} />
-                      {pro && p.proPrice < p.price && <Text variant="caption" color={colors.textTertiary} style={{ textDecorationLine: 'line-through' }}>{money(p.price)}</Text>}
-                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Text variant="headline" color={colors.brand}>{money(unitPrice(p, pro))}</Text>
-                        <PressableScale
-                          disabled={out || inCart >= p.stock}
-                          onPress={() => { haptic.success(); cartStore.add(p.id); }}
-                          accessibilityLabel={`Adicionar ${p.name} ao carrinho`}
-                          style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: out ? colors.border : colors.brand, alignItems: 'center', justifyContent: 'center' }}>
-                          {inCart ? <Text variant="footnote" weight="700" color={colors.white}>{inCart}</Text> : <Icon name="add" size={20} color={colors.white} />}
-                        </PressableScale>
-                      </View>
-                    </View>
-                  </View>
-                );
-              })}
+                  ))}
+                </View>
+              )}
             </View>
           </>
         )}
       </Sheet>
-      {cart.length > 0 && (
+      {count > 0 && (
         <View style={{ position: 'absolute', left: spacing.xl, right: spacing.xl, bottom: spacing.xxl }}>
-          <Button title={`Ver carrinho (${cart.reduce((a, i) => a + i.qty, 0)})`} icon="cart-outline" variant="dark" onPress={() => router.push('/cart')} />
+          <Button title={`Ver carrinho (${count})`} icon="cart-outline" variant="dark" onPress={() => router.push('/cart')} />
         </View>
       )}
     </Screen>
+  );
+}
+
+function ProductCard({ p, pro, inCart, wide }: { p: Product; pro: boolean; inCart: number; wide?: boolean }) {
+  const out = p.stock <= 0;
+  const photo = productPhoto(p, wide ? 900 : 500);
+  const off = pro && p.proPrice < p.price ? Math.round((1 - p.proPrice / p.price) * 100) : 0;
+  return (
+    <PressableScale
+      scaleTo={0.98}
+      onPress={() => router.push({ pathname: '/product/[id]', params: { id: p.id } })}
+      accessibilityLabel={`${p.name}, ${money(unitPrice(p, pro))}`}
+      style={{ backgroundColor: colors.surface, borderRadius: radius.xl, overflow: 'hidden', ...shadow.card }}>
+      <View style={{ aspectRatio: wide ? 4 / 3 : 1, backgroundColor: colors.surfaceMuted, alignItems: 'center', justifyContent: 'center' }}>
+        {photo ? <Image source={{ uri: photo }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={200} /> : <IconTile icon="bag-handle" size={56} />}
+        <View style={{ position: 'absolute', top: 10, left: 10, flexDirection: 'row', gap: 6 }}>
+          {out ? <Badge label="ESGOTADO" tone="dark" /> : off > 0 ? <Badge label={`PRO -${off}%`} tone="dark" /> : p.featured ? <Badge label="DESTAQUE" /> : null}
+        </View>
+      </View>
+      <View style={{ padding: spacing.md, gap: 4 }}>
+        <Text variant="caption" color={colors.brand} weight="600">{p.category.toUpperCase()}</Text>
+        <Text variant={wide ? 'headline' : 'subhead'} weight="600" numberOfLines={2} style={{ minHeight: wide ? undefined : 40 }}>{p.name}</Text>
+        {wide && !!p.description && <Text variant="footnote" color={colors.textSecondary} numberOfLines={2}>{p.description}</Text>}
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 4 }}>
+          <View>
+            {off > 0 && <Text variant="caption" color={colors.textTertiary} style={{ textDecorationLine: 'line-through' }}>{money(p.price)}</Text>}
+            <Text variant="headline" color={colors.text}>{money(unitPrice(p, pro))}</Text>
+          </View>
+          <PressableScale
+            disabled={out || inCart >= p.stock}
+            onPress={() => { haptic.success(); cartStore.add(p.id); }}
+            accessibilityLabel={`Adicionar ${p.name} ao carrinho`}
+            style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: out ? colors.border : colors.brand, alignItems: 'center', justifyContent: 'center' }}>
+            {inCart ? <Text variant="footnote" weight="700" color={colors.white}>{inCart}</Text> : <Icon name="add" size={20} color={colors.white} />}
+          </PressableScale>
+        </View>
+      </View>
+    </PressableScale>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Página do produto                                                   */
+/* ------------------------------------------------------------------ */
+export function ProductScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { shop, error, load } = useShop();
+  const cart = useCart();
+  const insets = useSafeAreaInsets();
+  const [qty, setQty] = useState(1);
+  const p = shop?.products.find((x) => x.id === id);
+  const pro = !!shop?.isPro;
+  const inCart = cart.find((i) => i.productId === id)?.qty ?? 0;
+  const count = cart.reduce((a, i) => a + i.qty, 0);
+
+  if (!shop || !p) {
+    return (
+      <Screen>
+        <ScreenHeader title="Produto" />
+        <Sheet>
+          {error ? (
+            <EmptyState icon="cloud-offline-outline" title="Não foi possível carregar" text={error} action="Tentar de novo" onAction={() => void load()} />
+          ) : !shop ? (
+            <ActivityIndicator color={colors.brand} style={{ marginTop: spacing.huge }} />
+          ) : (
+            <EmptyState icon="bag-handle-outline" title="Produto indisponível" text="Este produto saiu da loja." action="Ver a loja" onAction={() => router.replace('/shop')} />
+          )}
+        </Sheet>
+      </Screen>
+    );
+  }
+  const out = p.stock <= 0;
+  const max = Math.max(0, p.stock - inCart);
+  const photo = productPhoto(p, 1100);
+  const off = pro && p.proPrice < p.price ? Math.round((1 - p.proPrice / p.price) * 100) : 0;
+
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}>
+        <View style={{ aspectRatio: 1, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' }}>
+          {photo ? <Image source={{ uri: photo }} style={{ width: '100%', height: '100%' }} contentFit="cover" transition={250} /> : <IconTile icon="bag-handle" size={96} />}
+          <View style={{ position: 'absolute', top: insets.top + spacing.sm, left: spacing.xl, right: spacing.xl, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <BackButton tone="glass" />
+            <View style={{ backgroundColor: 'rgba(11,11,12,0.55)', borderRadius: 22 }}><CartButton /></View>
+          </View>
+        </View>
+        <View style={{ padding: spacing.xl, gap: spacing.lg, marginTop: -spacing.xl, backgroundColor: colors.background, borderTopLeftRadius: radius.xxl, borderTopRightRadius: radius.xxl }}>
+          <View style={{ gap: 6 }}>
+            <Text variant="footnote" color={colors.brand} weight="600">{p.category.toUpperCase()}</Text>
+            <Text variant="title1">{p.name}</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: spacing.md }}>
+            <Text variant="title1" color={colors.brand}>{money(unitPrice(p, pro))}</Text>
+            {off > 0 && <Text variant="subhead" color={colors.textTertiary} style={{ textDecorationLine: 'line-through', marginBottom: 4 }}>{money(p.price)}</Text>}
+            {off > 0 && <View style={{ marginBottom: 4 }}><Badge label={`PRO -${off}%`} tone="dark" /></View>}
+          </View>
+          {!pro && p.proPrice < p.price && (
+            <Text variant="footnote" color={colors.textSecondary}>Profissional aprovado paga {money(p.proPrice)} pelo app Tesourinha Pro.</Text>
+          )}
+          <Card style={{ gap: spacing.sm }}>
+            <Text variant="headline">Sobre o produto</Text>
+            <Text variant="callout" color={colors.textSecondary}>{p.description || 'Produto selecionado pela Associação Tesourinha.'}</Text>
+          </Card>
+          <ListGroup>
+            <ListRow icon="location-outline" title="Retirada" subtitle={shop.settings.pickupAddress} />
+            {shop.settings.deliveryEnabled && <ListRow icon="paper-plane" title="Entrega" subtitle={`Taxa ${money(shop.settings.deliveryFee)}`} />}
+            <ListRow icon="sparkles" title="Vale pontos Tesourinhas" subtitle="A compra entregue soma pontos e você pode pagar com cupom." />
+            <ListRow icon="bag-handle-outline" title="Estoque" value={out ? 'Esgotado' : p.stock <= 5 ? `Últimas ${p.stock}` : 'Disponível'} />
+          </ListGroup>
+        </View>
+      </ScrollView>
+      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: spacing.xl, paddingTop: spacing.md, paddingBottom: insets.bottom + spacing.md, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.separator, flexDirection: 'row', gap: spacing.md, alignItems: 'center' }}>
+        {!out && (
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+            <Stepper icon="remove" label="Menos um" disabled={qty <= 1} onPress={() => setQty((n) => Math.max(1, n - 1))} />
+            <Text variant="headline" style={{ minWidth: 24, textAlign: 'center' }}>{qty}</Text>
+            <Stepper icon="add" label="Mais um" disabled={qty >= max} onPress={() => setQty((n) => Math.min(max, n + 1))} />
+          </View>
+        )}
+        <View style={{ flex: 1 }}>
+          {out ? (
+            <Button title="Esgotado" disabled />
+          ) : max === 0 ? (
+            <Button title={`Ver carrinho (${count})`} variant="dark" icon="cart-outline" onPress={() => router.push('/cart')} />
+          ) : (
+            <Button
+              title={`Adicionar · ${money(unitPrice(p, pro) * qty)}`}
+              onPress={() => {
+                haptic.success();
+                cartStore.add(p.id, Math.min(qty, max));
+                setQty(1);
+                router.push('/cart');
+              }}
+            />
+          )}
+        </View>
+      </View>
+    </View>
   );
 }
 
