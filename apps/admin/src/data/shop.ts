@@ -45,6 +45,8 @@ export interface AdminOrder {
   address?: string
   notes?: string
   createdAt: string
+  paymentMethod: string
+  paymentStatus: 'pendente' | 'aprovado' | 'recusado' | 'estornado'
   items: { name: string; qty: number; unitPrice: number }[]
 }
 
@@ -94,6 +96,7 @@ export async function saveSettings(s: StoreSettings): Promise<void> {
         pickup_address: s.pickupAddress,
         delivery_enabled: s.deliveryEnabled,
         delivery_fee: s.deliveryFee,
+        online_payment: s.onlinePayment,
         grid_columns: s.gridColumns,
         banner_title: s.bannerTitle.trim() || 'Loja Tesourinha',
         banner_subtitle: s.bannerSubtitle.trim(),
@@ -169,6 +172,8 @@ export async function listOrders(): Promise<AdminOrder[]> {
     address: o.address ?? undefined,
     notes: o.notes ?? undefined,
     createdAt: o.created_at,
+    paymentMethod: o.payment_method,
+    paymentStatus: o.payment_status,
     items: (o.order_items ?? []).map((i: Row) => ({ name: i.name, qty: i.qty, unitPrice: Number(i.unit_price) })),
   }))
 }

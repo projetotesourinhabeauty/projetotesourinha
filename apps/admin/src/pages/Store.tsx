@@ -121,7 +121,12 @@ export default function StorePage() {
                       <div className="muted" style={{ fontSize: 12.5 }}>{o.phone} · {o.delivery === 'retirada' ? 'Retirada' : 'Entrega'}</div>
                     </td>
                     <td className="muted">{o.items.map((i) => `${i.qty}× ${i.name}`).join(', ')}</td>
-                    <td style={{ fontWeight: 600 }}>{brl(o.total)}</td>
+                    <td style={{ fontWeight: 600 }}>
+                      {brl(o.total)}
+                      <div className="muted" style={{ fontSize: 12, fontWeight: 400 }}>
+                        {o.paymentMethod === 'mercadopago' ? `Online · ${{ pendente: 'aguardando', aprovado: 'pago', recusado: 'recusado', estornado: 'estornado' }[o.paymentStatus]}` : 'Na retirada'}
+                      </div>
+                    </td>
                     <td><Badge tone={STATUS[o.status].tone}>{STATUS[o.status].label}</Badge></td>
                     <td className="right"><button className="btn sm" onClick={() => setView(o)}>Abrir</button></td>
                   </tr>
@@ -203,8 +208,8 @@ export default function StorePage() {
               <input type="number" min={0} step={0.5} value={settings.deliveryFee} onChange={(e) => setSettings({ ...settings, deliveryFee: Math.max(0, Number(e.target.value) || 0) })} />
             </Field>
           )}
-          <p className="muted" style={{ fontSize: 13, margin: 0 }}>Pagamento: {settings.onlinePayment ? 'Pix e cartão pelo Mercado Pago.' : 'na retirada. O pagamento online (Mercado Pago) é ligado depois que a conta for configurada.'}</p>
-          <div><button className="btn primary" disabled={saving} onClick={() => void run(() => saveSettings(settings), 'Configurações salvas')}>Salvar</button></div>
+          <div className="check-row">Pagamento online (Pix e cartão pelo Mercado Pago) <Switch on={settings.onlinePayment} onChange={(v) => setSettings({ ...settings, onlinePayment: v })} /></div>
+          <p className="muted" style={{ fontSize: 13, margin: 0 }}>Ligue só depois de cadastrar o Access Token do Mercado Pago no Supabase (Edge Functions › Secrets › MP_ACCESS_TOKEN). Desligado, o cliente paga na retirada.</p>          <div><button className="btn primary" disabled={saving} onClick={() => void run(() => saveSettings(settings), 'Configurações salvas')}>Salvar</button></div>
         </div>
       )}
 

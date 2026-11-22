@@ -1,4 +1,6 @@
+import * as WebBrowser from 'expo-web-browser';
 import { useSyncExternalStore } from 'react';
+import { Platform } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
 
@@ -50,6 +52,8 @@ export interface Order {
   delivery: 'retirada' | 'entrega';
   proPrice: boolean;
   createdAt: string;
+  paymentMethod: 'retirada' | 'pix' | 'cartao' | 'mercadopago';
+  paymentStatus: 'pendente' | 'aprovado' | 'recusado' | 'estornado';
   items: { name: string; qty: number; unitPrice: number }[];
 }
 
@@ -108,14 +112,14 @@ export async function loadShop(): Promise<Shop> {
   };
 }
 
-export async function placeOrder(input: { items: CartItem[]; coupon?: string; delivery: 'retirada' | 'entrega'; address?: string; notes?: string }) {
+export async function placeOrder(input: { items: CartItem[]; coupon?: string; delivery: 'retirada' | 'entrega'; address?: string; notes?: string; payment?: 'retirada' | 'mercadopago' }) {
   if (!supabase) {
     const items = input.items.map((i) => {
       const p = demoProducts.find((x) => x.id === i.productId)!;
       return { name: p.name, qty: i.qty, unitPrice: demoIsPro ? p.proPrice : p.price };
     });
     const subtotal = items.reduce((a, i) => a + i.unitPrice * i.qty, 0);
-    const o: Order = { id: String(Date.now()), number: demoOrders.length + 1, status: 'novo', subtotal, discount: 0, deliveryFee: 0, total: subtotal, delivery: input.delivery, proPrice: demoIsPro, createdAt: new Date().toISOString(), items };
+    const o: Order = { id: String(Date.now()), number: demoOrders.length + 1, status: 'novo', subtotal, discount: 0, deliveryFee: 0, total: subtotal, delivery: input.delivery, proPrice: demoIsPro, createdAt: new Date().toISOString(), paymentMethod: input.payment ?? 'retirada', paymentStatus: 'pendente', items };
     demoOrders.unshift(o);
     return { id: o.id, number: o.number, total: o.total };
   }
@@ -124,7 +128,7 @@ export async function placeOrder(input: { items: CartItem[]; coupon?: string; de
     p_coupon: input.coupon || null,
     p_delivery: input.delivery,
     p_address: input.address || null,
-    p_payment: 'retirada',
+    p_payment: input.payment ?? 'retirada',
     p_notes: input.notes || null,
   });
   fail(error);
@@ -136,7 +140,7 @@ export async function listOrders(): Promise<Order[]> {
   if (!supabase) return demoOrders;
   const { data, error } = await supabase
     .from('orders')
-    .select('id, number, status, total, subtotal, discount, delivery_fee, delivery, pro_price, created_at, order_items(name, qty, unit_price)')
+    .select('id, number, status, total, subtotal, discount, delivery_fee, delivery, pro_price, payment_method, payment_status, created_at, order_items(name, qty, unit_price)')
     .order('created_at', { ascending: false })
     .limit(50);
   fail(error);
@@ -151,6 +155,8 @@ export async function listOrders(): Promise<Order[]> {
     delivery: o.delivery,
     proPrice: o.pro_price,
     createdAt: o.created_at,
+    paymentMethod: o.payment_method,
+    paymentStatus: o.payment_status,
     items: (o.order_items ?? []).map((i: Row) => ({ name: i.name, qty: i.qty, unitPrice: Number(i.unit_price) })),
   }));
 }
@@ -162,6 +168,35 @@ export async function cancelOrder(id: string): Promise<void> {
     return;
   }
   fail((await supabase.rpc('cancel_my_order', { p_order: id })).error);
+}
+
+/**
+ * Pagamento online (Mercado Pago): pede o link à função mp-pagar e abre o checkout,
+ * onde a pessoa escolhe Pix ou cartão. A confirmação chega sozinha (webhook).
+ */
+export async function payOrder(orderId: string, retry = false): Promise<void> {
+  if (!supabase) throw new Error('Pagamento online disponível só na versão conectada ao servidor.');
+  if (retry) fail((await supabase.rpc('retry_my_payment', { p_order: orderId })).error);
+  const { data, error } = await supabase.functions.invoke('mp-pagar', {
+    body: { order_id: orderId, app: globalThis.location?.pathname?.startsWith('/profissional') ? 'pro' : 'cliente' },
+  });
+  if (error) {
+    let msg = error.message;
+    try {
+      const body = await (error as { context?: Response }).context?.json();
+      if (body?.error) msg = body.error;
+    } catch {
+      /* mantém a mensagem padrão */
+    }
+    throw new Error(msg);
+  }
+  const url = (data as { url?: string })?.url;
+  if (!url) throw new Error('Não foi possível abrir o pagamento.');
+  if (Platform.OS === 'web') {
+    globalThis.location?.assign(url);
+    return;
+  }
+  await WebBrowser.openBrowserAsync(url);
 }
 
 /* ------------------------------ carrinho ------------------------------ */

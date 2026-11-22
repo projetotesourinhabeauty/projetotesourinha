@@ -10,7 +10,7 @@ import { BackButton, Screen, ScreenHeader, Sheet } from '@/components/screen';
 import { Badge, Button, Card, Chip, EmptyState, IconTile, ListGroup, ListRow, PressableScale, SearchBar, SectionHeader, Text } from '@/components/ui';
 import { heroPhotos, productPhoto } from '@/data/imagery';
 import { money } from '@/data/points';
-import { ORDER_STATUS, cancelOrder, cartStore, listOrders, loadShop, myCoupons, placeOrder, useCart, type Order, type Product, type Shop } from '@/data/shop';
+import { ORDER_STATUS, cancelOrder, cartStore, listOrders, loadShop, myCoupons, payOrder, placeOrder, useCart, type Order, type Product, type Shop } from '@/data/shop';
 import { confirm, notify } from '@/lib/confirm';
 import { haptic } from '@/lib/haptics';
 import { isRemote } from '@/lib/supabase';
@@ -298,6 +298,7 @@ export function CartScreen() {
   const [delivery, setDelivery] = useState<'retirada' | 'entrega'>('retirada');
   const [address, setAddress] = useState('');
   const [sending, setSending] = useState(false);
+  const [payment, setPayment] = useState<'mercadopago' | 'retirada'>('mercadopago');
 
   useFocusEffect(
     useCallback(() => {
@@ -318,9 +319,19 @@ export function CartScreen() {
     if (!isRemote && !shop) return;
     setSending(true);
     try {
-      const o = await placeOrder({ items: cart, coupon, delivery, address });
+      const pay = shop?.settings.onlinePayment ? payment : 'retirada';
+      const o = await placeOrder({ items: cart, coupon, delivery, address, payment: pay });
       cartStore.clear();
       haptic.success();
+      if (pay === 'mercadopago') {
+        router.replace('/orders');
+        try {
+          await payOrder(o.id);
+        } catch (e) {
+          notify(`Pedido #${o.number} recebido`, `Não abrimos o pagamento agora (${e instanceof Error ? e.message : String(e)}). Toque em "Pagar agora" em Meus pedidos.`);
+        }
+        return;
+      }
       notify(`Pedido #${o.number} recebido!`, delivery === 'retirada' ? `Total ${money(o.total)}. Avisaremos quando estiver pronto para retirar.` : `Total ${money(o.total)}. Avisaremos quando sair para entrega.`);
       router.replace('/orders');
     } catch (e) {
@@ -382,6 +393,16 @@ export function CartScreen() {
               )}
             </View>
 
+            {shop.settings.onlinePayment && (
+              <View>
+                <SectionHeader title="Pagamento" />
+                <ListGroup>
+                  <ListRow icon="wallet-outline" title="Pagar agora" subtitle="Pix ou cartão, pelo Mercado Pago" onPress={() => setPayment('mercadopago')} right={<Radio on={payment === 'mercadopago'} />} />
+                  <ListRow icon="cash-outline" title={delivery === 'entrega' ? 'Pagar na entrega' : 'Pagar na retirada'} subtitle="Pix, cartão ou dinheiro" onPress={() => setPayment('retirada')} right={<Radio on={payment === 'retirada'} />} />
+                </ListGroup>
+              </View>
+            )}
+
             {coupons.length > 0 && (
               <View>
                 <SectionHeader title="Cupom de pontos" />
@@ -400,7 +421,9 @@ export function CartScreen() {
               <View style={{ height: 1, backgroundColor: colors.separator, marginVertical: 4 }} />
               <Line label="Total" value={money(total)} bold />
               <Text variant="footnote" color={colors.textSecondary}>
-                {shop.settings.onlinePayment ? 'Pagamento por Pix ou cartão.' : 'Pagamento na retirada (Pix, cartão ou dinheiro). A compra entregue vale pontos Tesourinhas.'}
+                {shop.settings.onlinePayment && payment === 'mercadopago'
+                  ? 'Você será levado ao Mercado Pago para pagar com Pix ou cartão. A compra entregue vale pontos Tesourinhas.'
+                  : 'Pagamento na retirada (Pix, cartão ou dinheiro). A compra entregue vale pontos Tesourinhas.'}
               </Text>
             </Card>
           </>
@@ -408,7 +431,7 @@ export function CartScreen() {
       </Sheet>
       {lines.length > 0 && (
         <View style={{ position: 'absolute', left: spacing.xl, right: spacing.xl, bottom: spacing.xxl }}>
-          <Button title={`Fechar pedido · ${money(total)}`} loading={sending} disabled={sending || (delivery === 'entrega' && address.trim().length < 8)} onPress={() => void submit()} />
+          <Button title={`${shop?.settings.onlinePayment && payment === 'mercadopago' ? 'Pagar' : 'Fechar pedido'} · ${money(total)}`} loading={sending} disabled={sending || (delivery === 'entrega' && address.trim().length < 8)} onPress={() => void submit()} />
         </View>
       )}
     </Screen>
@@ -439,6 +462,13 @@ function Line({ label, value, bold, color }: { label: string; value: string; bol
 /* ------------------------------------------------------------------ */
 /* Meus pedidos                                                        */
 /* ------------------------------------------------------------------ */
+const PAY_LABEL: Record<Order['paymentStatus'], string> = {
+  pendente: 'Aguardando pagamento (Pix ou cartão)',
+  aprovado: 'Pago pelo Mercado Pago',
+  recusado: 'Pagamento recusado',
+  estornado: 'Pagamento estornado',
+};
+
 export function OrdersScreen() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [error, setError] = useState('');
@@ -466,6 +496,19 @@ export function OrdersScreen() {
         notify('Não foi possível cancelar', e instanceof Error ? e.message : String(e));
       }
     });
+
+  const [paying, setPaying] = useState('');
+  const pay = async (o: Order) => {
+    setPaying(o.id);
+    try {
+      await payOrder(o.id, o.paymentStatus === 'recusado');
+    } catch (e) {
+      notify('Não foi possível abrir o pagamento', e instanceof Error ? e.message : String(e));
+    } finally {
+      setPaying('');
+      void load();
+    }
+  };
 
   return (
     <Screen>
@@ -499,12 +542,22 @@ export function OrdersScreen() {
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text variant="headline">{money(o.total)}{o.discount > 0 ? <Text variant="footnote" color={colors.success}>{`  (cupom - ${money(o.discount)})`}</Text> : null}</Text>
-                {o.status === 'novo' && (
+                {o.status === 'novo' && o.paymentStatus === 'pendente' && (
                   <Pressable onPress={() => cancel(o)} hitSlop={8}>
                     <Text variant="subhead" color={colors.danger}>Cancelar</Text>
                   </Pressable>
                 )}
               </View>
+              {o.paymentMethod === 'mercadopago' && o.status !== 'cancelado' && (
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.md }}>
+                  <Text variant="footnote" color={o.paymentStatus === 'aprovado' ? colors.success : o.paymentStatus === 'recusado' ? colors.danger : colors.textSecondary}>
+                    {PAY_LABEL[o.paymentStatus]}
+                  </Text>
+                  {o.status === 'novo' && (o.paymentStatus === 'pendente' || o.paymentStatus === 'recusado') && (
+                    <Button title={o.paymentStatus === 'recusado' ? 'Tentar de novo' : 'Pagar agora'} size="sm" full={false} loading={paying === o.id} disabled={!!paying} onPress={() => void pay(o)} />
+                  )}
+                </View>
+              )}
             </Card>
           ))
         )}
